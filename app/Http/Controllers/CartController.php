@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Orders;
+use App\Models\OrderDetails;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use App\Mail\NewOrder;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -15,7 +18,7 @@ class CartController extends Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke()
+    public function show()
     {
         if (session('id')) {
             $productIds = session()->get('id');
@@ -55,11 +58,32 @@ class CartController extends Controller
                 'name' => 'required',
                 'email' => 'required|email'
             ]);
+
+            $date = date('Y-m-d H:i:s');
+            Orders::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'date' => $date
+            ]);
+            $orderId = Orders::where('date', $date)->first();
+
             $productIds = session()->get('id');
             $products = Products::whereIn('id', $productIds)->get();
-            Mail::to(config('mail.to.addr'))->send(new NewOrder($products,  $request->input('name'),  $request->input('email'), $request->input('comments') ?? ''));
+
+            foreach ($products as $product) {
+                OrderDetails::create([
+                    'product_id' => $product->id,
+                    'order_id' => $orderId->id
+                ]);
+            }
+
+            Mail::to(config('mail.to.addr'))->send(new NewOrder( $products,
+                $request->input('name'),
+                $request->input('email'),
+                $request->input('comments') ?? ''));
             session()->pull('id');
             session()->save();
+
             return redirect('/');
         }
     }

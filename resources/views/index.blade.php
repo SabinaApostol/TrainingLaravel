@@ -16,10 +16,6 @@
             margin-left: auto;
             margin-right: auto;
         }
-        .center {
-            margin-left: auto;
-            margin-right: auto;
-        }
         img {
             height: 30px;
             width: 30px;
@@ -42,7 +38,9 @@
                 <td>{{ $product->title }}</td>
                 <td>{{ $product->description }}</td>
                 <td>{{ $product->price }}</td>
-                <td><img src="{{ URL::to('/') }}/images/{{ $product->image }}"/></td>
+                <td>
+                    <img src="{{ URL::to('/') }}/storage/images/{{ $product->image }}"/>
+                </td>
                 <td>
                     <form action="/" method="post">
                         @csrf

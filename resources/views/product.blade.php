@@ -27,12 +27,24 @@
     <form class="center" action="{{ $id ?? NULL }}" method="post" enctype="multipart/form-data">
         @csrf
         <input class="mywidth" type="text" name="title" value="{{ $product->title ?? old('title') }}" placeholder="Title">
+        @if ($errors->has('title'))
+            <p style="color: red"> {{ $errors->first('title') }}</p>
+        @endif
         <br>
         <input class="mywidth" type="text" name="description" value="{{ $product->description ?? old('description') }}" placeholder="description">
+        @if ($errors->has('description'))
+            <p style="color: red"> {{ $errors->first('description') }}</p>
+        @endif
         <br>
-        <input class="mywidth" type="number" step="0.01" name="price" value="{{ $product->price ?? old('title') }}" placeholder="price">
+        <input class="mywidth" type="number" step="0.01" name="price" value="{{ $product->price ?? old('price') }}" placeholder="price">
+        @if ($errors->has('price'))
+            <p style="color: red"> {{ $errors->first('price') }}</p>
+        @endif
         <br>
         <input type="file" name="file">
+        @if ($errors->has('file'))
+            <p style="color: red"> {{ $errors->first('file') }}</p>
+        @endif
         <button>Save</button>
     </form>
 </body>

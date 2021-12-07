@@ -13,6 +13,8 @@
         table, th, td {
             border: 1px solid #000000;
             text-align: center;
+        }
+        .center {
             margin-left: auto;
             margin-right: auto;
         }
@@ -20,44 +22,49 @@
             height: 30px;
             width: 30px;
         }
+        p, ul {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <h1>Products</h1>
+<h1>Order</h1>
     <table class="center">
         <tr>
-            <th></th>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Email</th>
             <th>Title</th>
             <th>Description</th>
             <th>Price</th>
-            <th>Edit product</th>
-            <th>Delete product</th>
+            <th>Image</th>
         </tr>
-        @foreach ($products as $product)
+        @foreach ($orderDetails as $order)
         <tr>
             <td>
-                <img src="{{ URL::to('/') }}/storage/images/{{ $product->image }}">
-            </td>
-            <td>{{ $product->title }}</td>
-            <td>{{ $product->description }}</td>
-            <td>{{ $product->price }}</td>
-            <td>
-                <a href="product/{{ $product->id }}">Edit</a>
+                {{ $order->date }}
             </td>
             <td>
-                <form action="products" method="post">
-                    @csrf
-                    <input name="id" value="{{ $product->id }}" type="hidden">
-                    <button name="delete" value="delete">Delete</button>
-                </form>
+                {{ $order->name }}
+            </td>
+            <td>
+                {{ $order->email }}
+            </td>
+            <td>
+                {{ $order->title }}
+            </td>
+            <td>
+                {{ $order->description }}
+            </td>
+            <td>
+                {{ $order->price }}
+            </td>
+            <td>
+                <img src="{{ URL::to('/') }}/storage/images/{{ $order->image }}">
             </td>
         </tr>
         @endforeach
     </table>
     <br>
-    <div style="text-align: center;">
-        <a href="product">Add</a>
-        <a href="login">Logout</a>
-    </div>
 </body>
 </html>

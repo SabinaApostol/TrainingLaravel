@@ -13,16 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'App\Http\Controllers\IndexController');
-Route::get('cart', 'App\Http\Controllers\CartController');
-Route::get('login', 'App\Http\Controllers\LoginController');
-Route::get('products', 'App\Http\Controllers\ProductsController');
-Route::get('product', 'App\Http\Controllers\ProductController');
+Route::get('/', 'App\Http\Controllers\IndexController@show');
+Route::get('cart', 'App\Http\Controllers\CartController@show');
+Route::get('login', 'App\Http\Controllers\LoginController@show');
+Route::get('products', 'App\Http\Controllers\ProductsController@show');
 
 Route::get('product/{id}', 'App\Http\Controllers\ProductController@edit');
+Route::get('product', 'App\Http\Controllers\ProductController@show');
+Route::get('orders', 'App\Http\Controllers\OrdersController@show');
+Route::get('order', 'App\Http\Controllers\OrderController@show');
 
 Route::post('product', 'App\Http\Controllers\ProductController@add');
 Route::post('product/{id}', 'App\Http\Controllers\ProductController@update');
+
+Route::get('order/{id}', 'App\Http\Controllers\OrderController@show');
 
 Route::post('products', 'App\Http\Controllers\ProductsController@store');
 Route::post('/', 'App\Http\Controllers\IndexController@store');

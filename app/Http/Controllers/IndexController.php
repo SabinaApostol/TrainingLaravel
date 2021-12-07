@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Products;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -15,7 +14,7 @@ class IndexController extends Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke ()
+    public function show()
     {
         if (session('id')) {
             $productIds = session()->get('id');
@@ -23,6 +22,7 @@ class IndexController extends Controller
         } else {
             $products = Products::all();
         }
+
         if (! $products->isEmpty()) {
             return view('index', ['products' => $products]);
         }

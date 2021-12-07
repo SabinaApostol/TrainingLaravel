@@ -40,7 +40,7 @@
                 <td>{{ $product->title }}</td>
                 <td>{{ $product->description }}</td>
                 <td>{{ $product->price }}</td>
-                <td><img src="{{ URL::to('/') }}/images/{{ $product->image }}"/></td>
+                <td><img src="{{ URL::to('/') }}/storage/images/{{ $product->image }}"/></td>
                 <td>
                     <form action="cart" method="post">
                         @csrf
