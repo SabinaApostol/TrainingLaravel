@@ -24,7 +24,7 @@ class ProductController extends Controller
         return view('product', ['id' => $id, 'product' => $product]);
     }
 
-    public function storeUpdated(Request $request, $id) {
+    public function update(Request $request, $id) {
         request()->validate([
             'title' => 'required',
             'description' => 'required',

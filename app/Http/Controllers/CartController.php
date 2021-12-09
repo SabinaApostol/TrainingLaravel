@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Mail;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use App\Mail\NewOrder;
-use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {

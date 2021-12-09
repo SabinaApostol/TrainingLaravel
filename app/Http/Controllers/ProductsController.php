@@ -27,11 +27,12 @@ class ProductsController extends Controller
             abort(404);
         }
 
-        Products::where('id',  $request->input('id'))->delete();
+        Products::destroy($request->input('id'));
         $order = OrderDetails::where('product_id', $request->input('id'))->first();
         if (! $order) {
-            OldProducts::where('id',  $request->input('id'))->delete();
+            OldProducts::destroy($request->input('id'));
         }
+        
         $products = Products::all();
         return view('products', ['products' => $products]);
     }
