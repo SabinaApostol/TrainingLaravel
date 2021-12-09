@@ -12,7 +12,7 @@
             <td>{{ $product->title }}</td>
             <td>{{ $product->description }}</td>
             <td>{{ $product->price }}</td>
-            <td><img style="width: 30px; height: 30px;" src="{{ URL::to('/') }}/images/{{ $product->image }}"/></td>
+            <td><img style="width: 30px; height: 30px;" src="{{ URL::to('http://127.0.0.1:8000/storage/images/') }}/{{ $product->image }}"/></td>
         </tr>
     @endforeach
 </table>

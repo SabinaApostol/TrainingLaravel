@@ -4,34 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        h1 {
-            text-align: center;
-            font-size: 50pt;
-        }
-        table, th, td {
-            border: 1px solid #000000;
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        img {
-            height: 30px;
-            width: 30px;
-        }
-    </style>
+    <title>{{ Lang::get('messages.doc_title') }}</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
-    <h1>Products</h1>
+    <h1>{{ Lang::get('messages.products') }}</h1>
     <table class="center">
         <tr>
             <th></th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Edit product</th>
-            <th>Delete product</th>
+            <th>{{ Lang::get('messages.title') }}</th>
+            <th>{{ Lang::get('messages.description') }}</th>
+            <th>{{ Lang::get('messages.price') }}</th>
+            <th>{{ Lang::get('messages.edit_product') }}</th>
+            <th>{{ Lang::get('messages.delete_product') }}</th>
         </tr>
         @foreach ($products as $product)
         <tr>
@@ -42,13 +27,13 @@
             <td>{{ $product->description }}</td>
             <td>{{ $product->price }}</td>
             <td>
-                <a href="product/{{ $product->id }}">Edit</a>
+                <a href="product/{{ $product->id }}">{{ Lang::get('messages.edit') }}</a>
             </td>
             <td>
                 <form action="products" method="post">
                     @csrf
                     <input name="id" value="{{ $product->id }}" type="hidden">
-                    <button name="delete" value="delete">Delete</button>
+                    <button name="delete" value="delete">{{ Lang::get('messages.delete') }}</button>
                 </form>
             </td>
         </tr>
@@ -56,8 +41,8 @@
     </table>
     <br>
     <div style="text-align: center;">
-        <a href="product">Add</a>
-        <a href="login">Logout</a>
+        <a href="product">{{ Lang::get('messages.add') }}</a>
+        <a href="login">{{ Lang::get('messages.logout') }}</a>
     </div>
 </body>
 </html>

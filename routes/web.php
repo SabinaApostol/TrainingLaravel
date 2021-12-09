@@ -23,8 +23,8 @@ Route::get('product', 'App\Http\Controllers\ProductController@show');
 Route::get('orders', 'App\Http\Controllers\OrdersController@show');
 Route::get('order', 'App\Http\Controllers\OrderController@show');
 
-Route::post('product', 'App\Http\Controllers\ProductController@add');
-Route::post('product/{id}', 'App\Http\Controllers\ProductController@update');
+Route::post('product', 'App\Http\Controllers\ProductController@store');
+Route::post('product/{id}', 'App\Http\Controllers\ProductController@storeUpdated');
 
 Route::get('order/{id}', 'App\Http\Controllers\OrderController@show');
 

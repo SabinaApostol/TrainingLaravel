@@ -5,7 +5,6 @@ use App\Models\OldProducts;
 use App\Models\OrderDetails;
 use App\Models\Products;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -16,7 +15,7 @@ class ProductController extends Controller
         return view('product');
     }
 
-    public function edit(Request $request, $id) {
+    public function edit($id) {
         if (! session('admin')) {
             abort(403);
         }
@@ -25,7 +24,7 @@ class ProductController extends Controller
         return view('product', ['id' => $id, 'product' => $product]);
     }
 
-    public function update(Request $request, $id) {
+    public function storeUpdated(Request $request, $id) {
         request()->validate([
             'title' => 'required',
             'description' => 'required',
@@ -76,7 +75,7 @@ class ProductController extends Controller
         return redirect('products');
     }
 
-    public function add(Request $request) {
+    public function store(Request $request) {
         request()->validate([
             'title' => 'required',
             'description' => 'required',

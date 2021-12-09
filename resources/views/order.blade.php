@@ -4,40 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        h1 {
-            text-align: center;
-            font-size: 50pt;
-        }
-        table, th, td {
-            border: 1px solid #000000;
-            text-align: center;
-        }
-        .center {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        img {
-            height: 30px;
-            width: 30px;
-        }
-        p, ul {
-            text-align: center;
-        }
-    </style>
+    <title>{{ \Illuminate\Support\Facades\Lang::get('messages.doc_title') }}</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
-<h1>Order</h1>
+<h1>{{ Lang::get('messages.order') }}</h1>
     <table class="center">
         <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Image</th>
+            <th>{{ Lang::get('messages.date') }}</th>
+            <th>{{ Lang::get('messages.name') }}</th>
+            <th>{{ Lang::get('messages.email') }}</th>
+            <th>{{ Lang::get('messages.title') }}</th>
+            <th>{{ Lang::get('messages.description') }}</th>
+            <th>{{ Lang::get('messages.price') }}</th>
+            <th>{{ Lang::get('messages.image') }}</th>
         </tr>
         @foreach ($orderDetails as $order)
         <tr>

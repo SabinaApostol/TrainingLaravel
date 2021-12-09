@@ -4,31 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        table, th, td {
-            border: 1px solid #000000;
-            text-align: center;
-        }
-        .center {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        h1 {
-            text-align: center;
-            font-size: 50pt;
-        }
-    </style>
+    <title>{{ Lang::get('messages.doc_title') }}</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
-    <h1>Orders</h1>
+    <h1>{{ Lang::get('messages.orders') }}</h1>
     <table class="center">
         <tr>
-            <th>Date</th>
-            <th>Customer name</th>
-            <th>Customer email</th>
-            <th>Total</th>
-            <th>Details</th>
+            <th>{{ Lang::get('messages.date') }}</th>
+            <th>{{ Lang::get('messages.customer_name') }}</th>
+            <th>{{ Lang::get('messages.customer_email') }}</th>
+            <th>{{ Lang::get('messages.total') }}</th>
+            <th>{{ Lang::get('messages.details') }}</th>
         </tr>
         @foreach ($orders as $order)
         <tr>
@@ -45,7 +32,7 @@
                 {{ $order->sum }}
             </td>
             <td>
-                <a href="order/{{ $order->id }}">See details</a>
+                <a href="order/{{ $order->id }}">{{ Lang::get('messages.see_details') }}</a>
             </td>
         </tr>
         @endforeach

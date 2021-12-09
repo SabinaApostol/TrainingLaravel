@@ -4,34 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        h1 {
-            text-align: center;
-            font-size: 50pt;
-        }
-        table, th, td {
-            border: 1px solid #000000;
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        img {
-            height: 30px;
-            width: 30px;
-        }
-    </style>
-
+    <title>{{ Lang::get('messages.doc_title') }}</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
-    <h1>List of products</h1>
+    <h1>{{ Lang::get('messages.list_products') }}</h1>
     <table>
         <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Image</th>
-            <th>Add</th>
+            <th>{{ Lang::get('messages.title') }}</th>
+            <th>{{ Lang::get('messages.description') }}</th>
+            <th>{{ Lang::get('messages.price') }}</th>
+            <th>{{ Lang::get('messages.image') }}</th>
+            <th>{{ Lang::get('messages.add') }}</th>
         </tr>
         @foreach ($products as $product)
             <tr>
@@ -45,12 +29,12 @@
                     <form action="/" method="post">
                         @csrf
                         <input name="id" value="{{ $product->id  }}" type="hidden">
-                        <button name="add" value="add">Add</button>
+                        <button name="add" value="add">{{ Lang::get('messages.add') }}</button>
                     </form>
                 </td>
             </tr>
         @endforeach
     </table>
-    <p style="text-align: center;"><a href="cart">Go to cart</a></p>
+    <p style="text-align: center;"><a href="cart">{{ Lang::get('messages.go_to_cart') }}</a></p>
 </body>
 </html>
