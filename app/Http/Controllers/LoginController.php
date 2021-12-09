@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function show() {
+    public function show()
+    {
         session()->pull('admin');
         session()->save();
         return view('login');

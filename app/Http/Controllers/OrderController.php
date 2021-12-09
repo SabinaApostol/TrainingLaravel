@@ -8,7 +8,8 @@ class OrderController extends Controller
 {
     protected $id;
 
-    public function show($id) {
+    public function show($id)
+    {
         if (! session('admin')) {
             abort(403);
         }

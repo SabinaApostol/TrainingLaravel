@@ -8,14 +8,16 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function show() {
+    public function show()
+    {
         if (! session('admin')) {
             abort(403);
         }
         return view('product');
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         if (! session('admin')) {
             abort(403);
         }
@@ -24,7 +26,8 @@ class ProductController extends Controller
         return view('product', ['id' => $id, 'product' => $product]);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         request()->validate([
             'title' => 'required',
             'description' => 'required',

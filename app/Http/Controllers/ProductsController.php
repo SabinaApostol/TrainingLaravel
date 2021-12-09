@@ -9,7 +9,8 @@ use App\Models\Products;
 
 class ProductsController extends Controller
 {
-    public function show() {
+    public function show()
+    {
         if (! session('admin')) {
             abort(403);
         }
@@ -17,7 +18,8 @@ class ProductsController extends Controller
         return view('products', ['products' => $products]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         request()->validate([
             'id' => 'required',
             'delete' => 'required'
