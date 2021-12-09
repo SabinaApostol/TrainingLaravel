@@ -32,7 +32,7 @@ class ProductsController extends Controller
         if (! $order) {
             OldProducts::destroy($request->input('id'));
         }
-        
+
         $products = Products::all();
         return view('products', ['products' => $products]);
     }

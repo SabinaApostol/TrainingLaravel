@@ -32,7 +32,8 @@ class CartController extends Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         if (! empty($request->input('id')) && ! empty($request->input('remove')) && $request->input('remove') === 'remove') {
             $id = $request->input('id');
             $productIds = session()->get('id');

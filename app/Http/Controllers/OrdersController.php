@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
 {
-    public function show() {
+    public function show()
+    {
         if (! session('admin')) {
             abort(403);
         }

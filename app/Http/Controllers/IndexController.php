@@ -31,7 +31,8 @@ class IndexController extends Controller
         }
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         if (! empty($request->input('id')) && ($request->input('add') ?? NULL)) {
             $id = $request->input('id');
             session()->push('id', $id);
