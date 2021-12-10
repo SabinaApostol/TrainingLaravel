@@ -80,7 +80,6 @@ class CartController extends Controller
                 $request->input('comments') ?? ''));
             session()->pull('id');
             session()->save();
-
             return redirect('/');
         }
     }

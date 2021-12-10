@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\OldProducts;
-use App\Models\OrderDetails;
+use App\Models\ProductOrder;
 use App\Models\Products;
 use Illuminate\Http\Request;
 
@@ -47,7 +47,7 @@ class ProductController extends Controller
                     'price' => $request->input('price'),
                     'image' => $request->file('file')->hashName()
                 ]);
-            $order = OrderDetails::where('product_id', $id)->first();
+            $order = ProductOrder::where('product_id', $id)->first();
             if (! $order) {
                 OldProducts::where('id', $id)
                     ->update([
@@ -64,7 +64,7 @@ class ProductController extends Controller
                     'description' => $request->input('description'),
                     'price' => $request->input('price')
                 ]);
-            $order = OrderDetails::where('product_id', $id)->first();
+            $order = ProductOrder::where('product_id', $id)->first();
             if (! $order) {
                 OldProducts::where('id', $id)
                     ->update([

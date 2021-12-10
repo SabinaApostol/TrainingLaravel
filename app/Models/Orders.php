@@ -13,7 +13,7 @@ class Orders extends Model
 
     public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Products::class, 'product_order', 'order_id', 'product_id');
+        return $this->belongsToMany(OldProducts::class, 'product_order', 'order_id','product_id');
     }
 
 }

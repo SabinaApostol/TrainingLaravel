@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Products;
 use Illuminate\Support\Facades\DB;
-use App\Models\Orders;
 
 class OrdersController extends Controller
 {

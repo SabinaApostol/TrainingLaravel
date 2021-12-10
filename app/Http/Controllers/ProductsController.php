@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\OldProducts;
-use App\Models\OrderDetails;
 use App\Models\ProductOrder;
 use Illuminate\Http\Request;
 use App\Models\Products;
@@ -15,8 +14,8 @@ class ProductsController extends Controller
         if (! session('admin')) {
             abort(403);
         }
-        $products = Products::all();
-        return view('products', ['products' => $products]);
+
+        return view('products', ['products' => Products::all()]);
     }
 
     public function store(Request $request)
@@ -36,7 +35,6 @@ class ProductsController extends Controller
             OldProducts::destroy($request->input('id'));
         }
 
-        $products = Products::all();
-        return view('products', ['products' => $products]);
+        return view('products', ['products' =>  Products::all()]);
     }
 }
