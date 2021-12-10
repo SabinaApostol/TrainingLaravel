@@ -10,4 +10,9 @@ class Products extends Model
     use HasFactory;
 
     protected $fillable = ['title', 'description', 'price', 'image'];
+
+    public function orders(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Orders::class, 'product_order', 'order_id','product_id');
+    }
 }

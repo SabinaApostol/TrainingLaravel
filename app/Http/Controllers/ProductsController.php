@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OldProducts;
 use App\Models\OrderDetails;
+use App\Models\ProductOrder;
 use Illuminate\Http\Request;
 use App\Models\Products;
 
@@ -30,7 +31,7 @@ class ProductsController extends Controller
         }
 
         Products::destroy($request->input('id'));
-        $order = OrderDetails::where('product_id', $request->input('id'))->first();
+        $order = ProductOrder::where('product_id', $request->input('id'))->first();
         if (! $order) {
             OldProducts::destroy($request->input('id'));
         }

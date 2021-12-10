@@ -71,10 +71,7 @@ class CartController extends Controller
             $products = Products::whereIn('id', $productIds)->get();
 
             foreach ($products as $product) {
-                OrderDetails::create([
-                    'product_id' => $product->id,
-                    'order_id' => $orderId->id
-                ]);
+                $orderId->products()->attach($product->id);
             }
 
             Mail::to(config('mail.to.addr'))->send(new NewOrder( $products,
