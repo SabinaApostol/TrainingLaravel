@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Orders;
 use App\Models\Products;
+use App\Jobs\SendEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Psr\Container\ContainerExceptionInterface;
@@ -73,7 +74,7 @@ class CartController extends Controller
                 $orderId->products()->attach($product->id);
             }
 
-            Mail::to(config('mail.to.addr'))->send(new NewOrder($products,
+            dispatch(new SendEmail($products,
                 $request->input('name'),
                 $request->input('email'),
                 $request->input('comments') ?? NULL));
