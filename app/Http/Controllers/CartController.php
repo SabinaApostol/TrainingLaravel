@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Orders;
-use App\Models\OrderDetails;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -80,6 +79,7 @@ class CartController extends Controller
                 $request->input('comments') ?? ''));
             session()->pull('id');
             session()->save();
+
             return redirect('/');
         }
     }

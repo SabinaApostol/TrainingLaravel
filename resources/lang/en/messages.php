@@ -35,5 +35,5 @@ return [
     'total' => 'Total',
     'details' => 'Details',
     'see_details' => 'See details',
-
+    'email' => 'Email',
 ];
