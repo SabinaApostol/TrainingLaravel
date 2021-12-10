@@ -31,6 +31,7 @@
             </td>
             <td>
                 <form action="products" method="post">
+                    @method('delete')
                     @csrf
                     <input name="id" value="{{ $product->id }}" type="hidden">
                     <button name="delete" value="delete">{{ Lang::get('messages.delete') }}</button>

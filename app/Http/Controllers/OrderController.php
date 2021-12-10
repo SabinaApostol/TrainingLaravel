@@ -13,6 +13,7 @@ class OrderController extends Controller
         if (! session('admin')) {
             abort(403);
         }
+
         $this->id = $id;
         $orderDetails = DB::table('orders')
             ->join('product_order', 'orders.id', '=', 'product_order.order_id')

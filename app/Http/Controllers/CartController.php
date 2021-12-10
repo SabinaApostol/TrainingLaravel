@@ -73,7 +73,7 @@ class CartController extends Controller
                 $orderId->products()->attach($product->id);
             }
 
-            Mail::to(config('mail.to.addr'))->send(new NewOrder( $products,
+            Mail::to(config('mail.to.addr'))->send(new NewOrder($products,
                 $request->input('name'),
                 $request->input('email'),
                 $request->input('comments') ?? ''));

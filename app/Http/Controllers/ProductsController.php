@@ -18,7 +18,7 @@ class ProductsController extends Controller
         return view('products', ['products' => Products::all()]);
     }
 
-    public function store(Request $request)
+    public function delete(Request $request)
     {
         request()->validate([
             'id' => 'required',

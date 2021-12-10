@@ -13,6 +13,7 @@ class ProductController extends Controller
         if (! session('admin')) {
             abort(403);
         }
+        
         return view('product');
     }
 

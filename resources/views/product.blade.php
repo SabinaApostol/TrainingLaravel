@@ -11,6 +11,9 @@
     <h1 class="center">{{ Lang::get('messages.add_edit') }}</h1>
     <form style="text-align: center" action="{{ $id ?? NULL }}" method="post" enctype="multipart/form-data">
         @csrf
+        @if($id ?? NULL)
+            @method('put')
+        @endif
         <input class="width" type="text" name="title" value="{{ $product->title ?? old('title') }}" placeholder="{{ Lang::get('messages.title') }}">
         @if ($errors->has('title'))
             <p style="color: red"> {{ $errors->first('title') }}</p>
