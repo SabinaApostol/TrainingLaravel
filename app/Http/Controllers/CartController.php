@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Orders;
 use App\Models\Products;
 use App\Jobs\SendEmail;
+use App\Events\SendEmailEvent;
+use App\Events\SendEmailListener;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -74,7 +77,12 @@ class CartController extends Controller
                 $orderId->products()->attach($product->id);
             }
 
-            dispatch(new SendEmail($products,
+//            dispatch(new SendEmail($products,
+//                $request->input('name'),
+//                $request->input('email'),
+//                $request->input('comments') ?? NULL));
+
+            event(new SendEmailEvent($products,
                 $request->input('name'),
                 $request->input('email'),
                 $request->input('comments') ?? NULL));
