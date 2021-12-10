@@ -11,11 +11,21 @@
     <h1>{{ Lang::get('messages.orders') }}</h1>
     <table class="center">
         <tr>
-            <th>{{ Lang::get('messages.date') }}</th>
-            <th>{{ Lang::get('messages.customer_name') }}</th>
-            <th>{{ Lang::get('messages.customer_email') }}</th>
-            <th>{{ Lang::get('messages.total') }}</th>
-            <th>{{ Lang::get('messages.details') }}</th>
+            <th>
+                {{ Lang::get('messages.date') }}
+            </th>
+            <th>
+                {{ Lang::get('messages.customer_name') }}
+            </th>
+            <th>
+                {{ Lang::get('messages.customer_email') }}
+            </th>
+            <th>
+                {{ Lang::get('messages.total') }}
+            </th>
+            <th>
+                {{ Lang::get('messages.details') }}
+            </th>
         </tr>
         @foreach ($orders as $order)
         <tr>

@@ -76,7 +76,8 @@ class CartController extends Controller
             Mail::to(config('mail.to.addr'))->send(new NewOrder($products,
                 $request->input('name'),
                 $request->input('email'),
-                $request->input('comments') ?? ''));
+                $request->input('comments') ?? NULL));
+
             session()->pull('id');
             session()->save();
 
