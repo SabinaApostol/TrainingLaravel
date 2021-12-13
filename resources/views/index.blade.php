@@ -1,40 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ Lang::get('messages.doc_title') }}</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <!-- Load the jQuery JS library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Custom JS script -->
+    <script type="text/javascript">
+         aux = document.cookie.split(';')[0];
+        csrf = aux.split('=');
+        $(document).ready(function () {
+            function renderList(products) {
+                html = [
+                    '<tr>',
+                    '<th>Title</th>',
+                    '<th>Description</th>',
+                    '<th>Price</th>',
+                ].join('');
+                if (window.location.hash === '#cart') {
+                    html += '<th>Remove from cart</th></tr>';
+                } else {
+                    html += '<th>Add to cart</th></tr>';
+                }
+                $.each(products, function (key, product) {
+                    html += [
+                        '<tr>',
+                        '<td>' + product.title + '</td>',
+                        '<td>' + product.description + '</td>',
+                        '<td>' + product.price + '</td>',
+                    ].join('');
+
+                    if (window.location.hash === '#cart') {
+                        html += '<td>';
+                        html += '<form action="cart" method="post">';
+                        html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
+                        html += '<input name="id" value="' + product.id + '" type="hidden">';
+                        html += '<button id="buttonId" name="remove" value="remove">Remove</button>';
+                        html += '</form></td></tr><br>';
+                    } else {
+                        html += '<td>';
+                        html += '<form action="/" method="post">';
+                        html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
+                        html += '<input name="id" value="' + product.id + '" type="hidden">';
+                        html += '<button name="add" value="add">Add</button>';
+                        html += '</form></td></tr>';
+                    }
+                });
+                return html;
+            }
+
+            /**
+             * URL hash change handler
+             */
+            window.onhashchange = function () {
+                // First hide all the pages
+                $('.page').hide();
+
+                switch(window.location.hash) {
+                    case '#cart':
+                        // Show the cart page
+                        $('.cart').show();
+                        // Load the cart products from the server
+                        $.ajax('cart', {
+                            dataType: 'json',
+                            success: function (response) {
+                                // Render the products in the cart list
+                                $('.cart .list').html(renderList(response));
+                            }
+                        });
+                        break;
+                    default:
+                        // If all else fails, always default to index
+                        // Show the index page
+                        $('.index').show();
+                        // Load the index products from the server
+                        $.ajax('/', {
+                            // dataType: 'json',
+                            success: function (response) {
+                                // Render the products in the index list
+                                $('.index .list').html(renderList(response));
+                            }
+                        });
+                        break;
+                }
+            }
+            window.onhashchange();
+        });
+    </script>
 </head>
 <body>
-    <h1>{{ Lang::get('messages.list_products') }}</h1>
-    <table>
-        <tr>
-            <th>{{ Lang::get('messages.title') }}</th>
-            <th>{{ Lang::get('messages.description') }}</th>
-            <th>{{ Lang::get('messages.price') }}</th>
-            <th>{{ Lang::get('messages.image') }}</th>
-            <th>{{ Lang::get('messages.add') }}</th>
-        </tr>
-        @foreach ($products as $product)
-            <tr>
-                <td>{{ $product->title }}</td>
-                <td>{{ $product->description }}</td>
-                <td>{{ $product->price }}</td>
-                <td>
-                    <img src="{{ URL::to('/') }}/storage/images/{{ $product->image }}"/>
-                </td>
-                <td>
-                    <form action="/" method="post">
-                        @csrf
-                        <input name="id" value="{{ $product->id  }}" type="hidden">
-                        <button name="add" value="add">{{ Lang::get('messages.add') }}</button>
-                    </form>
-                </td>
-            </tr>
-        @endforeach
-    </table>
-    <p style="text-align: center;"><a href="cart">{{ Lang::get('messages.go_to_cart') }}</a></p>
+<!-- The index page -->
+<div class="page index">
+    <h1>List of products</h1>
+    <!-- The index element where the products list is rendered -->
+    <table class="list"></table>
+    <br>
+    <!-- A link to go to the cart by changing the hash -->
+    <div style="text-align: center;">
+        <a href="#cart" class="button">Go to cart</a>
+    </div>
+</div>
+<!-- The cart page -->
+<div class="page cart">
+    <h1>Cart</h1>
+    <!-- The cart element where the products list is rendered -->
+    <table class="list"></table>
+    <br>
+    <!-- A link to go to the index by changing the hash -->
+    <div style="text-align: center;">
+        <a href="#" class="button">Go to index</a>
+    </div>
+</div>
 </body>
 </html>

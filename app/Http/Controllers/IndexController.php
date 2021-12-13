@@ -14,7 +14,7 @@ class IndexController extends Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function show()
+    public function show(Request $request)
     {
         if (session('id')) {
             $productIds = session()->get('id');
@@ -22,13 +22,12 @@ class IndexController extends Controller
         } else {
             $products = Products::all();
         }
+        setcookie("csrf", csrf_token());
+        if($request->ajax()){
+            return response($products);
+        }
 
-        if (! $products->isEmpty()) {
-            return view('index', ['products' => $products]);
-        }
-        else {
-            return view('index', ['products' => []]);
-        }
+        return view('index',['products' => $products]);
     }
 
     public function store(Request $request)
