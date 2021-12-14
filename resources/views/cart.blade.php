@@ -34,7 +34,7 @@
         @endforeach
     </table>
     <br>
-    <form style="text-align: center;" action="/cart" method="post">
+    <form id="form" style="text-align: center;" action="/cart" method="post">
         @csrf
         <input type="text" name="name" placeholder="{{ Lang::get('messages.name') }}" class="width" value="{{ old('name') }}">
         @if ($errors->has('name'))

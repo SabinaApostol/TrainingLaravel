@@ -6,7 +6,7 @@
 
     <!-- Custom JS script -->
     <script type="text/javascript">
-         aux = document.cookie.split(';')[0];
+        aux = document.cookie.split(';')[0];
         csrf = aux.split('=');
         $(document).ready(function () {
             function renderList(products) {
@@ -38,6 +38,7 @@
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
                         html += '<button id="buttonId" name="remove" value="remove">Remove</button>';
                         html += '</form></td></tr><br>';
+
                     } else {
                         html += '<td>';
                         html += '<form action="/" method="post">';
@@ -47,6 +48,40 @@
                         html += '</form></td></tr>';
                     }
                 });
+                if (window.location.hash === '#cart') {
+                    html += $('#form').load('/form');
+                    $('#form').on('submit', function (e) {
+                        e.preventDefault();
+
+                        let name = $('#name').val();
+                        let email = $('#email').val();
+                        let comments = $('#comments').val();
+
+                        $.ajax({
+                            url: "cart",
+                            type: "POST",
+                            data: {
+                                "_token": csrf[1],
+                                name: name,
+                                email: email,
+                                comments: comments,
+                            },
+                            success: function () {
+                                window.location.replace("#");
+                            },
+                            error: function (response) {
+                                let res = response.responseJSON.errors
+                                console.log(res.name + ' ' + res.email);
+                                if (res.name) {
+                                    html += $('#span').text(res.name);
+                                }
+                                if (res.email) {
+                                    html += $('#span').text(res.email);
+                                }
+                            },
+                        });
+                    });
+                }
                 return html;
             }
 
@@ -100,6 +135,7 @@
     <div style="text-align: center;">
         <a href="#cart" class="button">Go to cart</a>
     </div>
+    <a href="#login" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Login</a>
 </div>
 <!-- The cart page -->
 <div class="page cart">
@@ -107,10 +143,18 @@
     <!-- The cart element where the products list is rendered -->
     <table class="list"></table>
     <br>
+
     <!-- A link to go to the index by changing the hash -->
     <div style="text-align: center;">
+        <form id="form"></form>
+        <span class="error" id="span"></span>
         <a href="#" class="button">Go to index</a>
     </div>
+    <a href="#login" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Login</a>
+</div>
+<!-- The login page -->
+<div class="page login">
+    <h1>Login</h1>
 </div>
 </body>
 </html>

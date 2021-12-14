@@ -39,7 +39,6 @@ class CartController extends Controller
     public function store(Request $request)
     {
         if (! empty($request->input('id')) && ! empty($request->input('remove')) && $request->input('remove') === 'remove') {
-
             $id = $request->input('id');
             $productIds = session()->get('id');
             $found = NULL;
@@ -57,38 +56,35 @@ class CartController extends Controller
             session()->put('id', $productIds);
             session()->save();
             return redirect('/#cart');
-        }
-//        } else {
-//            request()->validate([
-//                'name' => 'required',
-//                'email' => 'required|email'
-//            ]);
-//
-//            $date = date('Y-m-d H:i:s');
-//            Orders::create([
-//                'name' => $request->input('name'),
-//                'email' => $request->input('email'),
-//                'date' => $date
-//            ]);
-//            $orderId = Orders::where('date', $date)->first();
-//
-//            $productIds = session()->get('id');
-//            $products = Products::whereIn('id', $productIds)->get();
-//
-//            foreach ($products as $product) {
-//                $orderId->products()->attach($product->id);
-//            }
-//
-//            $email = new NewOrder($products,
-//                $request->input('name'),
-//                $request->input('email'),
-//                $request->input('comments') ?? NULL);
-//            Mail::to(config('mail.to.addr'))->send($email);
-//
-//            session()->pull('id');
-//            session()->save();
+        } else {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email'
+            ]);
+            $date = date('Y-m-d H:i:s');
+            Orders::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'date' => $date
+            ]);
+            $orderId = Orders::where('date', $date)->first();
 
-//            return redirect('/');
-//        }
+            $productIds = session()->get('id');
+            $products = Products::whereIn('id', $productIds)->get();
+
+            foreach ($products as $product) {
+                $orderId->products()->attach($product->id);
+            }
+
+            $email = new NewOrder($products,
+                $request->input('name'),
+                $request->input('email'),
+                $request->input('comments') ?? NULL);
+            Mail::to(config('mail.to.addr'))->send($email);
+
+            session()->pull('id');
+            session()->save();
+            return response($products);
+        }
     }
 }

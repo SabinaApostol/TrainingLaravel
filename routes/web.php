@@ -23,6 +23,10 @@ Route::get('orders', 'App\Http\Controllers\OrdersController@show');
 Route::get('order', 'App\Http\Controllers\OrderController@show');
 Route::get('order/{id}', 'App\Http\Controllers\OrderController@show');
 
+Route::get('/form', function() {
+    return view('exec');
+});
+
 Route::post('product', 'App\Http\Controllers\ProductController@store');
 Route::post('/', 'App\Http\Controllers\IndexController@store');
 Route::post('cart', 'App\Http\Controllers\CartController@store');
