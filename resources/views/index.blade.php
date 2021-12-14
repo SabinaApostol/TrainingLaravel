@@ -15,6 +15,7 @@
                     '<th>Title</th>',
                     '<th>Description</th>',
                     '<th>Price</th>',
+                    '<th>Image</th>',
                 ].join('');
                 if (window.location.hash === '#cart') {
                     html += '<th>Remove from cart</th></tr>';
@@ -27,6 +28,7 @@
                         '<td>' + product.title + '</td>',
                         '<td>' + product.description + '</td>',
                         '<td>' + product.price + '</td>',
+                        '<th><img src="/storage/images/' + product.image + '"/></td></th>',
                     ].join('');
 
                     if (window.location.hash === '#cart') {
