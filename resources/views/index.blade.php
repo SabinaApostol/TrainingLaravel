@@ -70,8 +70,7 @@
                                 window.location.replace("#");
                             },
                             error: function (response) {
-                                let res = response.responseJSON.errors
-                                console.log(res.name + ' ' + res.email);
+                                let res = response.responseJSON.errors;
                                 if (res.name) {
                                     html += $('#span').text(res.name);
                                 }
@@ -84,7 +83,46 @@
                 }
                 return html;
             }
+            function createLogin() {
+                htmlForm = [
+                    '<input type="hidden" name="_token" value="' + csrf[1] +'">',
+                    '<input id="username" type="text" name="username" placeholder="Username">',
+                    '<br><input id="password" type="password" name="password" placeholder="Password">',
+                    '<br><button name="login" value="login">Login</button>',
+                ].join('');
+                $('#formLogin').on('submit', function (e) {
+                    e.preventDefault();
 
+                    let username = $('#username').val();
+                    let password = $('#password').val();
+                    $.ajax({
+                        url: "login",
+                        type: "POST",
+                        data: {
+                            "_token": csrf[1],
+                            username: username,
+                            password: password,
+                        },
+                        success: function (response) {
+                            if(response) {
+                                window.location.replace("#products");
+                            } else {
+                                htmlForm += $('#spanLogin').text('Invalid credentials');
+                            }
+                        },
+                        error: function (response) {
+                            let res = response.responseJSON.errors;
+                            if (res.username) {
+                                htmlForm += $('#spanLogin').text(res.username);
+                            }
+                            if (res.password) {
+                                htmlForm += $('#spanLogin').text(res.password);
+                            }
+                        },
+                    });
+                });
+                return htmlForm;
+            }
             /**
              * URL hash change handler
              */
@@ -93,6 +131,17 @@
                 $('.page').hide();
 
                 switch(window.location.hash) {
+                    case '#products':
+                        $('.products').show();
+                        break;
+                    case '#login':
+                        $('.login').show();
+                        $.ajax('login', {
+                            success: function () {
+                                $('.login .formLogin').html(createLogin());
+                            }
+                        });
+                        break;
                     case '#cart':
                         // Show the cart page
                         $('.cart').show();
@@ -111,7 +160,7 @@
                         $('.index').show();
                         // Load the index products from the server
                         $.ajax('/', {
-                            // dataType: 'json',
+                            dataType: 'json',
                             success: function (response) {
                                 // Render the products in the index list
                                 $('.index .list').html(renderList(response));
@@ -155,6 +204,15 @@
 <!-- The login page -->
 <div class="page login">
     <h1>Login</h1>
+    <div style="text-align: center;">
+        <form class="formLogin" method="post" id="formLogin"></form>
+        <span class="error" id="spanLogin"></span>
+    </div>
+</div>
+
+<!-- The products page -->
+<div class="page products">
+    <h1>Products</h1>
 </div>
 </body>
 </html>

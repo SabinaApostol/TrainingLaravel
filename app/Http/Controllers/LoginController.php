@@ -15,8 +15,8 @@ class LoginController extends Controller
     }
 
     public function store(Request $request) {
+
         request()->validate([
-            'login' => 'required',
             'username' => 'required',
             'password' => 'required'
         ]);
@@ -24,10 +24,7 @@ class LoginController extends Controller
         if ($request->input('username') === config('auth.admin_username') && $request->input('password') === config('auth.admin_password')) {
             session()->put('admin', true);
             session()->save();
-            return redirect('products');
-        } else {
-            return view('login')->withErrors(['invalid_credentials' => 'Invalid credentials!']);
+            return (response(session('admin')));
         }
-
     }
 }
