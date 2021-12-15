@@ -240,7 +240,6 @@
             window.onhashchange = function () {
                 // First hide all the pages
                 $('.page').hide();
-
                 switch(window.location.hash) {
                     case '#orders':
                         $.ajax('orders', {

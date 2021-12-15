@@ -21,6 +21,7 @@ class OrdersController extends Controller
             ->select('orders.id', 'orders.date', 'orders.name', 'orders.email', 'old_products.price', DB::raw('SUM(old_products.price) as sum'))
             ->groupBy('orders.id')
             ->get();
+
         if(request()->ajax()){
             return response($orders);
         }

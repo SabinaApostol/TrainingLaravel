@@ -18,6 +18,7 @@ class OrderController extends Controller
         }
 
         $this->id = $id;
+
         $orderDetails = DB::table('orders')
             ->join('product_order', 'orders.id', '=', 'product_order.order_id')
             ->join('old_products', function ($join) {
