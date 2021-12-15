@@ -11,24 +11,38 @@ class ProductController extends Controller
     public function show()
     {
         if (! session('admin')) {
+            if (request()->ajax()) {
+                return response('no_access');
+            }
             abort(403);
         }
-        
+
         return view('product');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         if (! session('admin')) {
             abort(403);
+            if($request->ajax()){
+                return response('no_access');
+            }
         }
-
         $product = Products::where('id', $id)->first();
+
+        if($request->ajax()){
+            return response($product);
+        }
         return view('product', ['id' => $id, 'product' => $product]);
     }
 
     public function update(Request $request, $id)
     {
+        if (! session('admin')) {
+            if($request->ajax()){
+                return response('no_access');
+            }
+        }
         request()->validate([
             'title' => 'required',
             'description' => 'required',
@@ -39,7 +53,6 @@ class ProductController extends Controller
             request()->validate([
                 'file' => 'required|image|mimes:jpg,png,jpeg'
             ]);
-
             $request->file('file')->store('images', 'public');
             Products::where('id', $id)
                 ->update([
@@ -49,7 +62,7 @@ class ProductController extends Controller
                     'image' => $request->file('file')->hashName()
                 ]);
             $order = ProductOrder::where('product_id', $id)->first();
-            if (! $order) {
+            if (!$order) {
                 OldProducts::where('id', $id)
                     ->update([
                         'title' => $request->input('title'),
@@ -66,7 +79,7 @@ class ProductController extends Controller
                     'price' => $request->input('price')
                 ]);
             $order = ProductOrder::where('product_id', $id)->first();
-            if (! $order) {
+            if (!$order) {
                 OldProducts::where('id', $id)
                     ->update([
                         'title' => $request->input('title'),
@@ -75,8 +88,11 @@ class ProductController extends Controller
                     ]);
             }
         }
-
+        if ($request->ajax()) {
+            return response(Products::all());
+        }
         return redirect('products');
+
     }
 
     public function store(Request $request) {
@@ -102,6 +118,9 @@ class ProductController extends Controller
             'image' => $request->file('file')->hashName()
         ]);
 
+        if($request->ajax()){
+            return response(Products::all());
+        }
         return redirect('products');
     }
 }

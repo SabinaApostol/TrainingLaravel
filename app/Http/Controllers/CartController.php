@@ -20,15 +20,20 @@ class CartController extends Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function show(Request $request)
+    public function show()
     {
         if (session('id')) {
             $productIds = session()->get('id');
             $products = Products::whereIn('id', $productIds)->get();
-            if($request->ajax()){
+            if(request()->ajax()){
                 return response($products);
             }
-            return view('index', ['products' => $products]);
+            return view('cart', ['products' => $products]);
+        } else {
+            if(request()->ajax()){
+                return response([]);
+            }
+            return view('cart', ['products' => []]);
         }
     }
 
@@ -52,10 +57,14 @@ class CartController extends Controller
             if ($found !== NULL) {
                 unset($productIds[$found]);
             }
-
             session()->put('id', $productIds);
             session()->save();
-            return redirect('/#cart');
+            $url = url()->current();
+            if (parse_url($url)['path'] === '/cartSPA') {
+                return redirect('/#cart');
+            } else {
+                return redirect('/cart');
+            }
         } else {
             $request->validate([
                 'name' => 'required',
@@ -84,7 +93,11 @@ class CartController extends Controller
 
             session()->pull('id');
             session()->save();
-            return response($products);
+
+            if(request()->ajax()) {
+                return response($products);
+            }
+            return redirect('/');
         }
     }
 }

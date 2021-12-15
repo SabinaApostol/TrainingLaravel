@@ -9,6 +9,9 @@ class OrdersController extends Controller
     public function show()
     {
         if (! session('admin')) {
+            if(request()->ajax()){
+                return response('no_access');
+            }
             abort(403);
         }
 
@@ -18,7 +21,9 @@ class OrdersController extends Controller
             ->select('orders.id', 'orders.date', 'orders.name', 'orders.email', 'old_products.price', DB::raw('SUM(old_products.price) as sum'))
             ->groupBy('orders.id')
             ->get();
-
+        if(request()->ajax()){
+            return response($orders);
+        }
         return view('orders', ['orders' => $orders]);
     }
 }

@@ -8,6 +8,7 @@
     <script type="text/javascript">
         aux = document.cookie.split(';')[0];
         csrf = aux.split('=');
+        loggedIn = false;
         $(document).ready(function () {
             function renderList(products) {
                 html = [
@@ -19,6 +20,9 @@
                 ].join('');
                 if (window.location.hash === '#cart') {
                     html += '<th>Remove from cart</th></tr>';
+                } else if(window.location.hash === '#products') {
+                    html += '<th>Edit product</th>';
+                    html += '<th>Delete products</th></tr>';
                 } else {
                     html += '<th>Add to cart</th></tr>';
                 }
@@ -28,17 +32,24 @@
                         '<td>' + product.title + '</td>',
                         '<td>' + product.description + '</td>',
                         '<td>' + product.price + '</td>',
-                        '<th><img src="/storage/images/' + product.image + '"/></td></th>',
+                        '<td><img src="/storage/images/' + product.image + '"/></td>',
                     ].join('');
 
                     if (window.location.hash === '#cart') {
                         html += '<td>';
-                        html += '<form action="cart" method="post">';
+                        html += '<form id="formR" action="cartSPA" method="post">';
                         html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
-                        html += '<button id="buttonId" name="remove" value="remove">Remove</button>';
+                        html += '<button name="remove" value="remove">Remove</button>';
                         html += '</form></td></tr><br>';
-
+                    } else if (window.location.hash === '#products') {
+                        html += '<td><a href="#product/' + product.id + '">Edit</a></td>';
+                        html += '<td>';
+                        html += '<form action="products" method="post">';
+                        html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
+                        html += '<input name="id" value="' + product.id + '" type="hidden">';
+                        html += '<button name="delete" value="delete">Delete</button>';
+                        html += '</form></td></tr>';
                     } else {
                         html += '<td>';
                         html += '<form action="/" method="post">';
@@ -80,6 +91,7 @@
                             },
                         });
                     });
+
                 }
                 return html;
             }
@@ -123,6 +135,105 @@
                 });
                 return htmlForm;
             }
+            function createProductForm(title, description, price) {
+                if (! title && ! description && ! price) {
+                    title = price = description = '';
+                }
+                htmlForm = [
+                    '<input class="width" type="hidden" name="_token" value="' + csrf[1] +'"><br>',
+                    '<input class="width" id="title" type="text" name="title" placeholder="Title" value="' + title + '"><br>',
+                    '<input class="width" id="description" type="text" name="description" placeholder="Description", value="' + description + '"><br>',
+                    '<input class="width" id="price" type="number" step="0.01" name="price" placeholder="Price" value="' + price + '"><br>',
+                    '<input type="file" name="file" id="image">',
+                    '<button name="save" value="save">Save</button>',
+                ].join('');
+
+                $('#formProduct').on('submit', function (e) {
+                    e.preventDefault();
+                    let formData = new FormData();
+                    formData.append('_token', csrf[1]);
+                    formData.append('title', $('#title').val());
+                    formData.append('description', $('#description').val());
+                    formData.append('price', $('#price').val());
+                    formData.append('file', $('#image')[0].files[0]);
+                    let url = window.location.hash.split('#')[1];
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function () {
+                            window.location.replace("#products");
+                        },
+                        error: function (response) {
+                            let res = response.responseJSON.errors;
+                            if (res.title) {
+                                htmlForm += $('#spanErrorProduct').text(res.title);
+                            }
+                            if (res.description) {
+                                htmlForm += $('#spanErrorProduct').text(res.description);
+                            }
+                            if (res.price) {
+                                htmlForm += $('#spanErrorProduct').text(res.price);
+                            }
+                            if (res.file) {
+                                htmlForm += $('#spanErrorProduct').text(res.file);
+                            }
+                        }
+                    });
+                });
+                return htmlForm;
+            }
+            function renderListOrders(orders) {
+                html = [
+                    '<tr>',
+                    '<th>Date</th>',
+                    '<th>Customer name</th>',
+                    '<th>Customer email</th>',
+                    '<th>Total</th>',
+                    '<th>Details</th>',
+                    '</tr>',
+                ].join('');
+                $.each(orders, function (key, order) {
+                    html += [
+                        '<tr>',
+                        '<td>' + order.date + '</td>',
+                        '<td>' + order.name + '</td>',
+                        '<td>' + order.email + '</td>',
+                        '<td>' + order.sum + '</td>',
+                        '<td><a href="#order/' + order.id + '">See details</td></tr>',
+                    ].join('');
+                });
+                return html;
+            }
+            function renderListOrderDetails(orderDetails) {
+                html = [
+                    '<tr>',
+                    '<th>Date</th>',
+                    '<th>Name</th>',
+                    '<th>Email</th>',
+                    '<th>Title</th>',
+                    '<th>Description</th>',
+                    '<th>Price</th>',
+                    '<th>Image</th>',
+                    '</tr>',
+                ].join('');
+                $.each(orderDetails, function (key, order) {
+                    html += [
+                        '<tr>',
+                        '<td>' + order.date + '</td>',
+                        '<td>' + order.name + '</td>',
+                        '<td>' + order.email + '</td>',
+                        '<td>' + order.title + '</td>',
+                        '<td>' + order.description + '</td>',
+                        '<td>' + order.price + '</td>',
+                        '<td><img src="/storage/images/' + order.image + '"/></td>',
+                        '</tr>',
+                    ].join('');
+                });
+                return html;
+            }
             /**
              * URL hash change handler
              */
@@ -131,8 +242,53 @@
                 $('.page').hide();
 
                 switch(window.location.hash) {
+                    case '#orders':
+                        $.ajax('orders', {
+                            success: function (response) {
+                                if (response !== 'no_access') {
+                                    $('.orders').show();
+                                    $.ajax('orders', {
+                                        dataType: 'json',
+                                        success: function (response) {
+                                            $('.orders .list').html(renderListOrders(response));
+                                        }
+                                    });
+                                } else {
+                                    window.location.replace("#");
+                                }
+                            }
+                        });
+                        break;
+                    case '#product':
+                        $.ajax('product', {
+                            success: function (response) {
+                                if (response !== 'no_access') {
+                                    $('.product').show();
+                                    $('.product .formProduct').html(createProductForm());
+                                } else {
+                                    window.location.replace("#");
+                                }
+                            }
+                        });
+
+                        break;
                     case '#products':
-                        $('.products').show();
+                        $.ajax('products', {
+                            success: function (response) {
+                                if (response !== 'no_access') {
+                                    $('.products').show();
+                                    $.ajax('/', {
+                                        dataType: 'json',
+                                        success: function (response) {
+                                            // Render the products in the products list
+                                            $('.products .list').html(renderList(response));
+                                        }
+                                    });
+                                } else {
+                                    window.location.replace("#");
+                                }
+                            }
+                        });
                         break;
                     case '#login':
                         $('.login').show();
@@ -141,6 +297,8 @@
                                 $('.login .formLogin').html(createLogin());
                             }
                         });
+                        break;
+                    case '#logout':
                         break;
                     case '#cart':
                         // Show the cart page
@@ -155,6 +313,43 @@
                         });
                         break;
                     default:
+                        if (window.location.hash.split('/')[0] === '#product') {
+                            $.ajax('product', {
+                                success: function (response) {
+                                    if (response !== 'no_access') {
+                                        $('.product').show();
+                                        $.ajax('/product/' + window.location.hash.split('/')[1], {
+                                            dataType: 'json',
+                                            success: function (response) {
+                                                $('.product .formProduct').html(createProductForm(response.title, response.description, response.price, response.image));
+                                            }
+                                        });
+                                    } else {
+                                        window.location.replace("#");
+                                    }
+                                }
+                            });
+                            break;
+                        }
+                        if (window.location.hash.split('/')[0] === '#order') {
+                            $.ajax('product', {
+                                success: function (response) {
+                                    if (response !== 'no_access') {
+                                        $('.order').show();
+                                        $.ajax('/order/' + window.location.hash.split('/')[1], {
+                                            dataType: 'json',
+                                            success: function (response) {
+                                                $('.order .list').html(renderListOrderDetails(response));
+                                            }
+                                        });
+                                    } else {
+                                        window.location.replace("#");
+                                    }
+                                }
+                            });
+
+                            break;
+                        }
                         // If all else fails, always default to index
                         // Show the index page
                         $('.index').show();
@@ -209,10 +404,35 @@
         <span class="error" id="spanLogin"></span>
     </div>
 </div>
-
 <!-- The products page -->
 <div class="page products">
     <h1>Products</h1>
+    <table class="list"></table>
+    <br>
+    <div style="text-align: center;">
+        <a href="#product">Add</a>
+        <a href="#login">Logout</a>
+    </div>
+    <a href="#orders" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Orders</a>
+</div>
+<!-- The product page -->
+<div class="page product">
+    <h1>Add/Edit product</h1>
+    <div style="text-align: center;">
+        <form class="formProduct" method="post" id="formProduct" enctype="multipart/form-data"></form>
+        <span class="error" id="spanErrorProduct"></span>
+    </div>
+    <a href="#orders" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Orders</a>
+</div>
+<!-- The orders page -->
+<div class="page orders">
+    <h1>Orders</h1>
+    <table class="list"></table>
+</div>
+<!-- The order page -->
+<div class="page order">
+    <h1>Order</h1>
+    <table class="list"></table>
 </div>
 </body>
 </html>

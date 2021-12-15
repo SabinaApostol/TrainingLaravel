@@ -11,6 +11,9 @@ class OrderController extends Controller
     public function show($id)
     {
         if (! session('admin')) {
+            if(request()->ajax()){
+                return response('no_access');
+            }
             abort(403);
         }
 
@@ -24,7 +27,9 @@ class OrderController extends Controller
             ->select('orders.id', 'orders.date', 'orders.name', 'orders.email', 'old_products.id as product_id',
                 'old_products.title as title', 'old_products.description as description', 'old_products.price as price', 'old_products.image as image')
             ->get();
-
+        if(request()->ajax()){
+            return response($orderDetails);
+        }
         return view('order', ['orderDetails' => $orderDetails]);
     }
 }

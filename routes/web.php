@@ -30,7 +30,16 @@ Route::get('/form', function() {
 Route::post('product', 'App\Http\Controllers\ProductController@store');
 Route::post('/', 'App\Http\Controllers\IndexController@store');
 Route::post('cart', 'App\Http\Controllers\CartController@store');
+
+Route::post('cartSPA', 'App\Http\Controllers\CartController@store');
 Route::post('login', 'App\Http\Controllers\LoginController@store');
 
 Route::put('product/{id}', 'App\Http\Controllers\ProductController@update');
+
+//Route::put('product/{id}', 'App\Http\Controllers\ProductController@update');
+Route::post('product/{id}', 'App\Http\Controllers\ProductController@update');
+
+Route::post('products', 'App\Http\Controllers\ProductsController@delete');
+
 Route::delete('products', 'App\Http\Controllers\ProductsController@delete');
+
