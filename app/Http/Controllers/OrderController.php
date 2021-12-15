@@ -18,7 +18,6 @@ class OrderController extends Controller
         }
 
         $this->id = $id;
-
         $orderDetails = DB::table('orders')
             ->join('product_order', 'orders.id', '=', 'product_order.order_id')
             ->join('old_products', function ($join) {
@@ -28,7 +27,7 @@ class OrderController extends Controller
             ->select('orders.id', 'orders.date', 'orders.name', 'orders.email', 'old_products.id as product_id',
                 'old_products.title as title', 'old_products.description as description', 'old_products.price as price', 'old_products.image as image')
             ->get();
-        if(request()->ajax()){
+        if(request()->ajax()) {
             return response($orderDetails);
         }
         return view('order', ['orderDetails' => $orderDetails]);

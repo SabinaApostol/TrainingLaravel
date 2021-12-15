@@ -25,7 +25,7 @@ class CartController extends Controller
         if (session('id')) {
             $productIds = session()->get('id');
             $products = Products::whereIn('id', $productIds)->get();
-            if(request()->ajax()){
+            if(request()->ajax()) {
                 return response($products);
             }
             return view('cart', ['products' => $products]);

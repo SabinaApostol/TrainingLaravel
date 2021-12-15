@@ -8,7 +8,6 @@
     <script type="text/javascript">
         aux = document.cookie.split(';')[0];
         csrf = aux.split('=');
-        loggedIn = false;
         $(document).ready(function () {
             function renderList(products) {
                 html = [
@@ -164,7 +163,7 @@
                         data: formData,
                         contentType: false,
                         processData: false,
-                        success: function (response) {
+                        success: function () {
                             window.location.replace("#products");
                         },
                         error: function (response) {

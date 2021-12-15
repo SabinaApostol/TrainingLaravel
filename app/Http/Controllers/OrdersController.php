@@ -22,7 +22,7 @@ class OrdersController extends Controller
             ->groupBy('orders.id')
             ->get();
 
-        if(request()->ajax()){
+        if(request()->ajax()) {
             return response($orders);
         }
         return view('orders', ['orders' => $orders]);

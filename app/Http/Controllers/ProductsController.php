@@ -12,7 +12,7 @@ class ProductsController extends Controller
     public function show()
     {
         if (! session('admin')) {
-            if(request()->ajax()){
+            if(request()->ajax()) {
                 return response('no_access');
             }
             abort(403);
