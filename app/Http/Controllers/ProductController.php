@@ -43,6 +43,7 @@ class ProductController extends Controller
                 return response('no_access');
             }
         }
+
         request()->validate([
             'title' => 'required',
             'description' => 'required',

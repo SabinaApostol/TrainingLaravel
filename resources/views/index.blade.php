@@ -149,6 +149,7 @@
                 ].join('');
 
                 $('#formProduct').on('submit', function (e) {
+                    e.stopImmediatePropagation();
                     e.preventDefault();
                     let formData = new FormData();
                     formData.append('_token', csrf[1]);
@@ -163,7 +164,7 @@
                         data: formData,
                         contentType: false,
                         processData: false,
-                        success: function () {
+                        success: function (response) {
                             window.location.replace("#products");
                         },
                         error: function (response) {
