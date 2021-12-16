@@ -8,12 +8,12 @@ class OrdersController extends Controller
 {
     public function show()
     {
-        if (! session('admin')) {
-            if(request()->ajax()){
-                return response('no_access');
-            }
-            abort(403);
-        }
+//        if (! session('admin')) {
+//            if(request()->ajax()){
+//                return response('no_access');
+//            }
+//            abort(403);
+//        }
 
         $orders = DB::table('orders')
             ->join('product_order', 'orders.id', '=', 'product_order.order_id')

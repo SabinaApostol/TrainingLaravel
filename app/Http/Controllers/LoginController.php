@@ -11,7 +11,7 @@ class LoginController extends Controller
     {
         session()->pull('admin');
         session()->save();
-        return view('login');
+        return view('index');
     }
 
     public function store(Request $request) {
@@ -21,10 +21,12 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        if ($request->input('username') === config('auth.admin_username') && $request->input('password') === config('auth.admin_password')) {
+        if ($request->username === config('auth.admin_username') && $request->password === config('auth.admin_password')) {
             session()->put('admin', true);
             session()->save();
-            return (response(session('admin')));
+            return response()->json(['error' => false]);
+        } else {
+            return response()->json(['error'=>true]);
         }
     }
 }

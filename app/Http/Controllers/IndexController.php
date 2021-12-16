@@ -22,21 +22,15 @@ class IndexController extends Controller
         } else {
             $products = Products::all();
         }
-        setcookie("csrf", csrf_token());
-        if($request->ajax()){
-            return response($products);
-        }
 
-        return view('index',['products' => $products]);
+        return response()->json($products);
     }
+
 
     public function store(Request $request)
     {
-        if (! empty($request->input('id')) && ($request->input('add') ?? NULL)) {
-            $id = $request->input('id');
-            session()->push('id', $id);
-            session()->save();
-            return redirect('/');
-        }
+        $id = $request->id;
+        session()->push('id', $id);
+        session()->save();
     }
 }

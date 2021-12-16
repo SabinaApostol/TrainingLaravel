@@ -25,15 +25,9 @@ class CartController extends Controller
         if (session('id')) {
             $productIds = session()->get('id');
             $products = Products::whereIn('id', $productIds)->get();
-            if(request()->ajax()) {
-                return response($products);
-            }
-            return view('cart', ['products' => $products]);
+            return response()->json($products);
         } else {
-            if(request()->ajax()){
-                return response([]);
-            }
-            return view('cart', ['products' => []]);
+            return response()->json([]);
         }
     }
 
@@ -43,8 +37,9 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        if (! empty($request->input('id')) && ! empty($request->input('remove')) && $request->input('remove') === 'remove') {
-            $id = $request->input('id');
+        if ($request->id) {
+
+            $id = $request->id;
             $productIds = session()->get('id');
             $found = NULL;
 
@@ -58,13 +53,6 @@ class CartController extends Controller
                 unset($productIds[$found]);
             }
             session()->put('id', $productIds);
-            session()->save();
-            $url = url()->current();
-            if (parse_url($url)['path'] === '/cartSPA') {
-                return redirect('/#cart');
-            } else {
-                return redirect('/cart');
-            }
         } else {
             $request->validate([
                 'name' => 'required',
@@ -93,11 +81,7 @@ class CartController extends Controller
 
             session()->pull('id');
             session()->save();
-
-            if(request()->ajax()) {
-                return response($products);
-            }
-            return redirect('/');
         }
+        session()->save();
     }
 }
