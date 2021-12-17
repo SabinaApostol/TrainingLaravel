@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Orders extends Model
+class Order extends Model
 {
     use HasFactory;
 
@@ -13,7 +13,7 @@ class Orders extends Model
 
     public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(OldProducts::class, 'product_order', 'order_id','product_id');
+        return $this->belongsToMany(Product::class, 'product_order', 'order_id','product_id');
     }
 
 }

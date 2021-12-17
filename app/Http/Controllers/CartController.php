@@ -6,16 +6,10 @@ use App\Models\Orders;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use App\Mail\NewOrder;
 
 class CartController extends Controller
 {
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     public function show()
     {
         if (session('id')) {
@@ -27,10 +21,6 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     public function store(Request $request)
     {
         if (! empty($request->input('id')) && ! empty($request->input('remove')) && $request->input('remove') === 'remove') {
@@ -85,3 +75,12 @@ class CartController extends Controller
         }
     }
 }
+Schema::create('product_order', function (Blueprint $table) {
+    $table->increments('id');
+    $table->unsignedInteger('product_id');
+    $table->foreign('product_id')->references('id')->on('old_products')->onDelete('cascade');
+    $table->unsignedInteger('order_id');
+    $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+    $table->float('price');
+    $table->timestamps();
+});

@@ -2,42 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Products;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 
 class IndexController extends Controller
 {
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    public function show()
+    public function index()
     {
         if (session('id')) {
             $productIds = session()->get('id');
-            $products = Products::whereNotIn('id', $productIds)->get();
+            $products = Product::whereNotIn('id', $productIds)->get();
         } else {
-            $products = Products::all();
+            $products = Product::all();
         }
 
-        if (! $products->isEmpty()) {
-            return view('index', ['products' => $products]);
-        }
-        else {
-            return view('index', ['products' => []]);
-        }
+        return view('index', ['products' => $products]);
     }
 
     public function store(Request $request)
     {
-        if (! empty($request->input('id')) && ($request->input('add') ?? NULL)) {
+        if ($request->has('id')) {
             $id = $request->input('id');
             session()->push('id', $id);
             session()->save();
-            return redirect('/');
+            return redirect()->route('index');
         }
     }
 }
