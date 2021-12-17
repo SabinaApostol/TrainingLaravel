@@ -12,32 +12,26 @@ class ProductsController extends Controller
     public function show()
     {
         if (! session('admin')) {
-            if(request()->ajax()) {
-                return response('no_access');
-            }
-            abort(403);
+           return  response()->json(['error' => true]);
         }
-        if(request()->ajax()){
-            return response(Products::all());
+        $products = Products::all();
+        if ($products)  {
+            return response()->json($products);
+        } else {
+            return response()->json([]);
         }
-        return view('products', ['products' => Products::all()]);
     }
 
     public function delete(Request $request)
     {
         request()->validate([
-            'id' => 'required',
-            'delete' => 'required'
+            'id' => 'required'
         ]);
 
-        if ($request->input('delete') !== 'delete') {
-            abort(404);
-        }
         Products::destroy($request->input('id'));
         $order = ProductOrder::where('product_id', $request->input('id'))->first();
         if (! $order) {
             OldProducts::destroy($request->input('id'));
         }
-        return redirect('/#products');
     }
 }

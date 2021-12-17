@@ -23,18 +23,22 @@ Route::get('/cart', function () {
 Route::get('/login', function () {
     return view('index');
 });
-Route::get('/error', function () {
-    return view('error');
+Route::get('/products', function () {
+    return view('index');
 });
 
 Route::get('index', 'App\Http\Controllers\IndexController@show');
 Route::get('cartShow', 'App\Http\Controllers\CartController@show');
 Route::get('loginShow', 'App\Http\Controllers\LoginController@show');
+Route::get('productsShow', 'App\Http\Controllers\ProductsController@show');
+Route::get('product/{id}', 'App\Http\Controllers\ProductController@edit');
 
 Route::post('cart', 'App\Http\Controllers\CartController@store');
 Route::post('/', 'App\Http\Controllers\IndexController@store');
-
 Route::post('login', 'App\Http\Controllers\LoginController@store');
+
+Route::post('products', 'App\Http\Controllers\ProductsController@delete');
+
 //Route::post('login', 'App\Http\Controllers\LoginController@store');
 //Route::get('/smt', 'App\Http\Controllers\IndexController@showProds');
 //

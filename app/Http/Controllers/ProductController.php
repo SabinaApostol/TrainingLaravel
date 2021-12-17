@@ -30,9 +30,6 @@ class ProductController extends Controller
         }
         $product = Products::where('id', $id)->first();
 
-        if($request->ajax()){
-            return response($product);
-        }
         return view('product', ['id' => $id, 'product' => $product]);
     }
 

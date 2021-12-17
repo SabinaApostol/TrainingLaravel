@@ -34,7 +34,6 @@
             <router-link to="/">Go to index</router-link>
     </div>
     <router-link to="/login"  style="position: absolute; bottom: 0pt; right: 0pt;">Login</router-link>
-<!--    <a href="#login" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Login</a>-->
 </template>
 <script>
 
