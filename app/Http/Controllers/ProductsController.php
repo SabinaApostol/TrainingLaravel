@@ -2,39 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OldProducts;
-use App\Models\ProductOrder;
 use Illuminate\Http\Request;
-use App\Models\Products;
+use App\Models\Product;
 
 class ProductsController extends Controller
 {
-    public function show()
+    public function index()
     {
         if (! session('admin')) {
             abort(403);
         }
 
-        return view('products', ['products' => Products::all()]);
+        return view('products', ['products' => Product::all()]);
     }
 
-    public function delete(Request $request)
+    public function destroy(Request $request)
     {
-        request()->validate([
-            'id' => 'required',
-            'delete' => 'required'
+        $request->validate([
+            'id' => 'required'
         ]);
 
-        if ($request->input('delete') !== 'delete') {
-            abort(404);
-        }
-
-        Products::destroy($request->input('id'));
-        $order = ProductOrder::where('product_id', $request->input('id'))->first();
-        if (! $order) {
-            OldProducts::destroy($request->input('id'));
-        }
-
-        return view('products', ['products' =>  Products::all()]);
+        Product::where('id', $request->input('id'))->delete();
+        return view('products', ['products' =>  Product::all()]);
     }
 }

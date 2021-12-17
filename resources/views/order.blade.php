@@ -1,64 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ Lang::get('messages.doc_title') }}</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
-<body>
-<h1>{{ Lang::get('messages.order') }}</h1>
-    <table class="center">
-        <tr>
-            <th>
-                {{ Lang::get('messages.date') }}
-            </th>
-            <th>
-                {{ Lang::get('messages.name') }}
-            </th>
-            <th>
-                {{ Lang::get('messages.email') }}
-            </th>
-            <th>
-                {{ Lang::get('messages.title') }}
-            </th>
-            <th>
-                {{ Lang::get('messages.description') }}
-            </th>
-            <th>
-                {{ Lang::get('messages.price') }}
-            </th>
-            <th>
-                {{ Lang::get('messages.image') }}
-            </th>
-        </tr>
-        @foreach ($orderDetails as $order)
-        <tr>
-            <td>
-                {{ $order->date }}
-            </td>
-            <td>
-                {{ $order->name }}
-            </td>
-            <td>
-                {{ $order->email }}
-            </td>
-            <td>
-                {{ $order->title }}
-            </td>
-            <td>
-                {{ $order->description }}
-            </td>
-            <td>
-                {{ $order->price }}
-            </td>
-            <td>
-                <img src="{{ URL::to('/') }}/storage/images/{{ $order->image }}">
-            </td>
-        </tr>
-        @endforeach
-    </table>
-    <br>
-</body>
-</html>
+@extends('layouts.layout')
+<h1>{{ __('messages.order') }}</h1>
+<table class="center">
+    <tr>
+        <th>
+            {{ __('messages.date') }}
+        </th>
+        <th>
+            {{ __('messages.name') }}
+        </th>
+        <th>
+            {{ __('messages.email') }}
+        </th>
+    </tr>
+    <tr>
+        <td>
+            {{ $order->date }}
+        </td>
+        <td>
+            {{ $order->name }}
+        </td>
+        <td>
+            {{ $order->email }}
+        </td>
+    </tr>
+</table>
+<br>
+<table class="center">
+    <tr>
+        <th>
+            {{ __('messages.title') }}
+        </th>
+        <th>
+            {{ __('messages.description') }}
+        </th>
+        <th>
+            {{ __('messages.price') }}
+        </th>
+        <th>
+            {{ __('messages.image') }}
+        </th>
+    </tr>
+    @foreach ($products as $product)
+    <tr>
+        <td>
+            {{ $product->title }}
+        </td>
+        <td>
+            {{ $product->description }}
+        </td>
+        <td>
+            {{ $product->price }}
+        </td>
+        <td>
+            <img src="{{ asset('/storage/images/' . $product->image) }}"/>
+        </td>
+    </tr>
+    @endforeach
+</table>
+<br>

@@ -24,9 +24,11 @@ class IndexController extends Controller
     {
         if ($request->has('id')) {
             $id = $request->input('id');
-            session()->push('id', $id);
-            session()->save();
-            return redirect()->route('index');
+            if (Product::where('id', $id)->exists()) {
+                session()->push('id', $id);
+                return redirect()->route('index.index');
+            }
         }
+        abort(404);
     }
 }

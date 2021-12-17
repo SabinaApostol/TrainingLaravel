@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->text('name');
             $table->text('email');
             $table->dateTime('date');
+            $table->text('comments');
             $table->timestamps();
         });
     }

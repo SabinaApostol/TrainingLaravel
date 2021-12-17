@@ -9,7 +9,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'date'];
+    protected $fillable = ['name', 'email', 'date', 'comments'];
 
     public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

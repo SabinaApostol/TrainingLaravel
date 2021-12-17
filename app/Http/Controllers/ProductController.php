@@ -1,19 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\OldProducts;
 use App\Models\ProductOrder;
-use App\Models\Products;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function show()
+    public function index()
     {
         if (! session('admin')) {
             abort(403);
         }
-        
         return view('product');
     }
 
@@ -22,14 +22,13 @@ class ProductController extends Controller
         if (! session('admin')) {
             abort(403);
         }
-
-        $product = Products::where('id', $id)->first();
-        return view('product', ['id' => $id, 'product' => $product]);
+        $product = Product::where('id', $id)->first();
+        return view('product', ['product' => $product]);
     }
 
     public function update(Request $request, $id)
     {
-        request()->validate([
+        $request->validate([
             'title' => 'required',
             'description' => 'required',
             'price' => 'required|numeric'
@@ -41,46 +40,28 @@ class ProductController extends Controller
             ]);
 
             $request->file('file')->store('images', 'public');
-            Products::where('id', $id)
+            Product::where('id', $id)
                 ->update([
                     'title' => $request->input('title'),
                     'description' => $request->input('description'),
                     'price' => $request->input('price'),
                     'image' => $request->file('file')->hashName()
                 ]);
-            $order = ProductOrder::where('product_id', $id)->first();
-            if (! $order) {
-                OldProducts::where('id', $id)
-                    ->update([
-                        'title' => $request->input('title'),
-                        'description' => $request->input('description'),
-                        'price' => $request->input('price'),
-                        'image' => $request->file('file')->hashName()
-                    ]);
-            }
         } else {
-            Products::where('id', $id)
+            Product::where('id', $id)
                 ->update([
                     'title' => $request->input('title'),
                     'description' => $request->input('description'),
                     'price' => $request->input('price')
                 ]);
-            $order = ProductOrder::where('product_id', $id)->first();
-            if (! $order) {
-                OldProducts::where('id', $id)
-                    ->update([
-                        'title' => $request->input('title'),
-                        'description' => $request->input('description'),
-                        'price' => $request->input('price')
-                    ]);
-            }
         }
 
-        return redirect('products');
+        return redirect()->route('products.index');
     }
 
-    public function store(Request $request) {
-        request()->validate([
+    public function store(Request $request)
+    {
+        $request->validate([
             'title' => 'required',
             'description' => 'required',
             'price' => 'required|numeric',
@@ -89,19 +70,13 @@ class ProductController extends Controller
 
         $request->file('file')->store('images', 'public');
 
-        Products::create([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            'image' => $request->file('file')->hashName()
-        ]);
-        OldProducts::create([
+        Product::create([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
             'price' => $request->input('price'),
             'image' => $request->file('file')->hashName()
         ]);
 
-        return redirect('products');
+        return redirect()->route('products.index');
     }
 }
