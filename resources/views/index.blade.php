@@ -36,7 +36,7 @@
 
                     if (window.location.hash === '#cart') {
                         html += '<td>';
-                        html += '<form id="formR" action="cartSPA" method="post">';
+                        html += '<form id="formR" action="cart_destroy" method="post">';
                         html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
                         html += '<button name="remove" value="remove">Remove</button>';
@@ -59,10 +59,18 @@
                     }
                 });
                 if (window.location.hash === '#cart') {
-                    html += $('#form').load('/form');
-                    $('#form').on('submit', function (e) {
+                    htmlFrom = [
+                        '<input type="hidden" name="_token" value="' + csrf[1] +'">',
+                        '<input id="name" type="text" name="name" placeholder="Name" class="width"><br>',
+                        '<input id="email" type="text" name="email" placeholder="Email" class="width"><br>',
+                        '<textarea id="comments" name="comments" cols="40" rows="10" placeholder="Comments"></textarea>',
+                        '<br><div style="text-align: center;">',
+                        '<button type="submit" id="button" name="checkout" value="checkout">Checkout</button></div>'
+                    ].join('');
+                    $('.cart .formCart').html(htmlFrom);
+                    $('#formCart').on('submit', function (e) {
                         e.preventDefault();
-
+                        e.stopImmediatePropagation();
                         let name = $('#name').val();
                         let email = $('#email').val();
                         let comments = $('#comments').val();
@@ -103,7 +111,7 @@
                 ].join('');
                 $('#formLogin').on('submit', function (e) {
                     e.preventDefault();
-
+                    e.stopImmediatePropagation();
                     let username = $('#username').val();
                     let password = $('#password').val();
                     $.ajax({
@@ -115,7 +123,7 @@
                             password: password,
                         },
                         success: function (response) {
-                            if(response) {
+                            if(response === 'logged_in') {
                                 window.location.replace("#products");
                             } else {
                                 htmlForm += $('#spanLogin').text('Invalid credentials');
@@ -185,6 +193,7 @@
                 });
                 return htmlForm;
             }
+
             function renderListOrders(orders) {
                 html = [
                     '<tr>',
@@ -207,31 +216,33 @@
                 });
                 return html;
             }
-            function renderListOrderDetails(orderDetails) {
+            function renderProductsInOrder(products){
                 html = [
                     '<tr>',
-                    '<th>Date</th>',
-                    '<th>Name</th>',
-                    '<th>Email</th>',
                     '<th>Title</th>',
                     '<th>Description</th>',
                     '<th>Price</th>',
                     '<th>Image</th>',
-                    '</tr>',
+                    '</tr>'
                 ].join('');
-                $.each(orderDetails, function (key, order) {
+                $.each(products, function (key, product) {
                     html += [
                         '<tr>',
-                        '<td>' + order.date + '</td>',
-                        '<td>' + order.name + '</td>',
-                        '<td>' + order.email + '</td>',
-                        '<td>' + order.title + '</td>',
-                        '<td>' + order.description + '</td>',
-                        '<td>' + order.price + '</td>',
-                        '<td><img src="/storage/images/' + order.image + '"/></td>',
+                        '<td>' + product.title + '</td>',
+                        '<td>' + product.description + '</td>',
+                        '<td>' + product.price + '</td>',
+                        '<td><img src="/storage/images/' + product.image + '"/></td>',
                         '</tr>',
                     ].join('');
                 });
+                return html;
+            }
+            function renderListOrderDetails(order) {
+                html = [
+                    '<li>Date: ' + order.date +'</li>',
+                    '<li>Name: ' + order.name +'</li>',
+                    '<li>Email: ' + order.email +'</li>',
+                ].join('');
                 return html;
             }
             /**
@@ -317,7 +328,7 @@
                                 success: function (response) {
                                     if (response !== 'no_access') {
                                         $('.product').show();
-                                        $.ajax('/product/' + window.location.hash.split('/')[1], {
+                                        $.ajax('/product/' + window.location.hash.split('/')[1] + '/edit', {
                                             dataType: 'json',
                                             success: function (response) {
                                                 $('.product .formProduct').html(createProductForm(response.title, response.description, response.price, response.image));
@@ -331,16 +342,12 @@
                             break;
                         }
                         if (window.location.hash.split('/')[0] === '#order') {
-                            $.ajax('product', {
+                            $.ajax('order/' + window.location.hash.split('/')[1], {
                                 success: function (response) {
                                     if (response !== 'no_access') {
                                         $('.order').show();
-                                        $.ajax('/order/' + window.location.hash.split('/')[1], {
-                                            dataType: 'json',
-                                            success: function (response) {
-                                                $('.order .list').html(renderListOrderDetails(response));
-                                            }
-                                        });
+                                        $('.order .table').html(renderProductsInOrder(response.products));
+                                        $('.order .list').html(renderListOrderDetails(response.order));
                                     } else {
                                         window.location.replace("#");
                                     }
@@ -386,10 +393,9 @@
     <!-- The cart element where the products list is rendered -->
     <table class="list"></table>
     <br>
-
     <!-- A link to go to the index by changing the hash -->
     <div style="text-align: center;">
-        <form id="form"></form>
+        <form class="formCart" id="formCart"></form>
         <span class="error" id="span"></span>
         <a href="#" class="button">Go to index</a>
     </div>
@@ -431,7 +437,8 @@
 <!-- The order page -->
 <div class="page order">
     <h1>Order</h1>
-    <table class="list"></table>
+    <table class="table"></table>
+    <ul class="list"></ul>
 </div>
 </body>
 </html>

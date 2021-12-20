@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function show()
+    public function index()
     {
         session()->pull('admin');
         session()->save();
@@ -24,7 +24,8 @@ class LoginController extends Controller
         if ($request->input('username') === config('auth.admin_username') && $request->input('password') === config('auth.admin_password')) {
             session()->put('admin', true);
             session()->save();
-            return (response(session('admin')));
+            return (response('logged_in'));
         }
+        return view('login')->withErrors(['invalid_credentials' => 'Invalid credentials!']);
     }
 }
