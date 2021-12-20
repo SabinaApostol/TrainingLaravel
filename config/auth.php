@@ -108,7 +108,7 @@ return [
 
     'password_timeout' => 10800,
 
-    'admin_username' => 'admin',
+    'admin_email' => 'sabina.apostol@5psolutions.eu',
 
     'admin_password' => 'password123'
 
