@@ -11,17 +11,11 @@ class ProductController extends Controller
 {
     public function index()
     {
-        if (! session('admin')) {
-            abort(403);
-        }
         return view('product');
     }
 
     public function edit($id)
     {
-        if (! session('admin')) {
-            abort(403);
-        }
         $product = Product::where('id', $id)->first();
         return view('product', ['product' => $product]);
     }

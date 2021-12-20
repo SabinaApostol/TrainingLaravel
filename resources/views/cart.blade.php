@@ -1,4 +1,13 @@
 @extends('layouts.layout')
+@if (Route::has('login'))
+    <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+        @auth
+            <a href="{{ url('/products') }}">{{ __('messages.products') }}</a>
+        @else
+            <a href="{{ route('login') }}">{{ __('messages.login') }}</a>
+        @endauth
+    </div>
+@endif
 <h1>{{ __('messages.cart') }}</h1>
 <table>
     <tr>

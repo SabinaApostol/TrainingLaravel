@@ -9,10 +9,6 @@ class ProductsController extends Controller
 {
     public function index()
     {
-        if (! session('admin')) {
-            abort(403);
-        }
-
         return view('products', ['products' => Product::all()]);
     }
 

@@ -1,4 +1,14 @@
 @extends('layouts.layout')
+@if (Route::has('login'))
+    <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+        @auth
+            <form action="{{ route('logout') }}" method="post">
+                @csrf
+                <button name="delete" value="delete">{{ __('messages.logout') }}</button>
+            </form>
+        @endauth
+    </div>
+@endif
 <h1 class="center">{{ __('messages.add_edit') }}</h1>
 <form style="text-align: center" action="{{ $product->id ?? NULL }}" method="post" enctype="multipart/form-data">
     @csrf

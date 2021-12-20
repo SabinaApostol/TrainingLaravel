@@ -9,10 +9,6 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        if (! session('admin')) {
-            abort(403);
-        }
-
         $orders = Order::join('product_order', 'orders.id', '=', 'product_order.order_id')
             ->select('orders.id', 'orders.date', 'orders.name', 'orders.email', 'orders.comments', DB::raw('SUM(product_order.price) as sum'))
             ->groupBy('orders.id')

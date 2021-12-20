@@ -16,7 +16,7 @@ return [
     'comments' => 'Comments',
     'go_to_index' => 'Go to index',
     'checkout' => 'Checkout',
-    'login' => 'Login',
+    'login' => 'Log in',
     'username' => 'Username',
     'password' => 'Password',
     'products' => 'Products',
