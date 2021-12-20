@@ -35,8 +35,3 @@ Route::post('product/{id}', 'App\Http\Controllers\ProductController@update')->na
 
 Route::delete('products', 'App\Http\Controllers\ProductsController@destroy')->name('products.destroy');
 Route::post('cart_destroy', 'App\Http\Controllers\CartController@destroy')->name('cart.destroy');
-
-Route::get('/form', function() {
-    return view('exec');
-});
-
