@@ -105,29 +105,30 @@
             function createLogin() {
                 htmlForm = [
                     '<input type="hidden" name="_token" value="' + csrf[1] +'">',
-                    '<input id="username" type="text" name="username" placeholder="Username">',
+                    '<input id="email" type="text" name="email" placeholder="Eamil">',
                     '<br><input id="password" type="password" name="password" placeholder="Password">',
                     '<br><button name="login" value="login">Login</button>',
                 ].join('');
                 $('#formLogin').on('submit', function (e) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
-                    let username = $('#username').val();
+                    let email = $('#email').val();
                     let password = $('#password').val();
                     $.ajax({
                         url: "login",
                         type: "POST",
                         data: {
                             "_token": csrf[1],
-                            username: username,
+                            email: email,
                             password: password,
                         },
                         success: function (response) {
-                            if(response === 'logged_in') {
-                                window.location.replace("#products");
-                            } else {
-                                htmlForm += $('#spanLogin').text('Invalid credentials');
-                            }
+                            console.log(response)
+                            // if(response === 'logged_in') {
+                            //     window.location.replace("#products");
+                            // } else {
+                            //     htmlForm += $('#spanLogin').text('Invalid credentials');
+                            // }
                         },
                         error: function (response) {
                             let res = response.responseJSON.errors;
