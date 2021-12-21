@@ -69,8 +69,8 @@
                     ].join('');
                     $('.cart .formCart').html(htmlFrom);
                     $('#formCart').on('submit', function (e) {
-                        e.preventDefault();
                         e.stopImmediatePropagation();
+                        e.preventDefault();
                         let name = $('#name').val();
                         let email = $('#email').val();
                         let comments = $('#comments').val();
@@ -105,13 +105,13 @@
             function createLogin() {
                 htmlForm = [
                     '<input type="hidden" name="_token" value="' + csrf[1] +'">',
-                    '<input id="email" type="text" name="email" placeholder="Eamil">',
+                    '<input id="email" type="text" name="email" placeholder="Email">',
                     '<br><input id="password" type="password" name="password" placeholder="Password">',
-                    '<br><button name="login" value="login">Login</button>',
+                    '<br><button type="submit" name="login" value="login">Login</button>',
                 ].join('');
                 $('#formLogin').on('submit', function (e) {
-                    e.preventDefault();
                     e.stopImmediatePropagation();
+                    e.preventDefault();
                     let email = $('#email').val();
                     let password = $('#password').val();
                     $.ajax({
@@ -123,20 +123,18 @@
                             password: password,
                         },
                         success: function (response) {
-                            console.log(response)
-                            // if(response === 'logged_in') {
-                            //     window.location.replace("#products");
-                            // } else {
-                            //     htmlForm += $('#spanLogin').text('Invalid credentials');
-                            // }
+                            if(response === 'logged_in') {
+                                window.location.replace("#products");
+                            }
                         },
                         error: function (response) {
                             let res = response.responseJSON.errors;
-                            if (res.username) {
-                                htmlForm += $('#spanLogin').text(res.username);
-                            }
-                            if (res.password) {
+                            if (res.email) {
+                                htmlForm += $('#spanLogin').text(res.email);
+                            } else  if (res.password) {
                                 htmlForm += $('#spanLogin').text(res.password);
+                            } else {
+                                htmlForm += $('#spanLogin').text('Invalid credentials');
                             }
                         },
                     });
@@ -246,6 +244,29 @@
                 ].join('');
                 return html;
             }
+            function createLogout() {
+                html = [
+                    // '<form action="logout" method="post">',
+                    '<input class="width" type="hidden" name="_token" value="' + csrf[1] +'"><br>',
+                    '<button type="submit" name="logout" value="logout">Logout</button>',
+                    // '</form>'
+                ].join('');
+                $('#formLogout').on('submit', function (e) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    $.ajax({
+                        url: 'logout',
+                        type: "POST",
+                        data: {
+                            "_token": csrf[1]
+                        },
+                        success: function (response) {
+                            window.location.replace("#")
+                        }
+                    });
+                });
+                return html;
+            }
             /**
              * URL hash change handler
              */
@@ -254,50 +275,42 @@
                 $('.page').hide();
                 switch(window.location.hash) {
                     case '#orders':
+                        $('.orders').show();
                         $.ajax('orders', {
+                            dataType: 'json',
                             success: function (response) {
-                                if (response !== 'no_access') {
-                                    $('.orders').show();
-                                    $.ajax('orders', {
-                                        dataType: 'json',
-                                        success: function (response) {
-                                            $('.orders .list').html(renderListOrders(response));
-                                        }
-                                    });
-                                } else {
-                                    window.location.replace("#");
-                                }
+                                $('.orders .list').html(renderListOrders(response));
+                            },
+                            error: function () {
+                                window.location.replace('#');
                             }
                         });
                         break;
                     case '#product':
                         $.ajax('product', {
-                            success: function (response) {
-                                if (response !== 'no_access') {
+                            success: function () {
                                     $('.product').show();
                                     $('.product .formProduct').html(createProductForm());
-                                } else {
-                                    window.location.replace("#");
-                                }
+                            },
+                            error: function () {
+                                window.location.replace('#');
                             }
                         });
-
                         break;
                     case '#products':
-                        $.ajax('products', {
-                            success: function (response) {
-                                if (response !== 'no_access') {
-                                    $('.products').show();
-                                    $.ajax('/', {
-                                        dataType: 'json',
-                                        success: function (response) {
-                                            // Render the products in the products list
-                                            $('.products .list').html(renderList(response));
-                                        }
-                                    });
-                                } else {
-                                    window.location.replace("#");
-                                }
+                        $.ajax('product', {
+                            success: function () {
+                                $('.products').show();
+                                $.ajax('products', {
+                                    dataType: 'json',
+                                    success: function (response) {
+                                        $('.products .list').html(renderList(response));
+                                        $('.products .formLogout').html(createLogout());
+                                    }
+                                });
+                            },
+                            error: function () {
+                                window.location.replace('#');
                             }
                         });
                         break;
@@ -308,8 +321,6 @@
                                 $('.login .formLogin').html(createLogin());
                             }
                         });
-                        break;
-                    case '#logout':
                         break;
                     case '#cart':
                         // Show the cart page
@@ -326,32 +337,35 @@
                     default:
                         if (window.location.hash.split('/')[0] === '#product') {
                             $.ajax('product', {
-                                success: function (response) {
-                                    if (response !== 'no_access') {
-                                        $('.product').show();
-                                        $.ajax('/product/' + window.location.hash.split('/')[1] + '/edit', {
-                                            dataType: 'json',
-                                            success: function (response) {
-                                                $('.product .formProduct').html(createProductForm(response.title, response.description, response.price, response.image));
-                                            }
-                                        });
-                                    } else {
-                                        window.location.replace("#");
-                                    }
+                                success: function () {
+                                    $('.product').show();
+                                    $.ajax('/product/' + window.location.hash.split('/')[1] + '/edit', {
+                                        dataType: 'json',
+                                        success: function (response) {
+                                            $('.product .formProduct').html(createProductForm(response.title, response.description, response.price, response.image));
+                                        }
+                                    });
+                                },
+                                error: function () {
+                                    window.location.replace('#');
                                 }
                             });
+
                             break;
                         }
                         if (window.location.hash.split('/')[0] === '#order') {
-                            $.ajax('order/' + window.location.hash.split('/')[1], {
-                                success: function (response) {
-                                    if (response !== 'no_access') {
-                                        $('.order').show();
-                                        $('.order .table').html(renderProductsInOrder(response.products));
-                                        $('.order .list').html(renderListOrderDetails(response.order));
-                                    } else {
-                                        window.location.replace("#");
-                                    }
+                            $.ajax('product', {
+                                success: function () {
+                                    $('.order').show();
+                                    $.ajax('order/' + window.location.hash.split('/')[1], {
+                                        success: function (response) {
+                                            $('.order .table').html(renderProductsInOrder(response.products));
+                                            $('.order .list').html(renderListOrderDetails(response.order));
+                                        }
+                                    });
+                                },
+                                error: function () {
+                                    window.location.replace('#');
                                 }
                             });
 
@@ -417,9 +431,9 @@
     <br>
     <div style="text-align: center;">
         <a href="#product">Add</a>
-        <a href="#login">Logout</a>
     </div>
     <a href="#orders" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Orders</a>
+    <form id="formLogout" style="position: absolute; bottom: 0pt;" class="formLogout"></form>
 </div>
 <!-- The product page -->
 <div class="page product">
@@ -429,17 +443,20 @@
         <span class="error" id="spanErrorProduct"></span>
     </div>
     <a href="#orders" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Orders</a>
+    <form id="formLogout" style="position: absolute; bottom: 0pt;" class="formLogout"></form>
 </div>
 <!-- The orders page -->
 <div class="page orders">
     <h1>Orders</h1>
     <table class="list"></table>
+    <form id="formLogout" style="position: absolute; bottom: 0pt;" class="formLogout"></form>
 </div>
 <!-- The order page -->
 <div class="page order">
     <h1>Order</h1>
     <table class="table"></table>
     <ul class="list"></ul>
+    <form id="formLogout" style="position: absolute; bottom: 0pt;" class="formLogout"></form>
 </div>
 </body>
 </html>

@@ -11,12 +11,6 @@ class ProductsController extends Controller
 {
     public function index()
     {
-        if (! session('admin')) {
-            if(request()->ajax()) {
-                return response('no_access');
-            }
-            abort(403);
-        }
         if(request()->ajax()){
             return response(Product::all());
         }

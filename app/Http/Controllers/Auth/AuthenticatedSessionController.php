@@ -1,11 +1,11 @@
 <?php
 
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,13 +27,19 @@ class AuthenticatedSessionController extends Controller
      * @param  \App\Http\Requests\Auth\LoginRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(LoginRequest $request)
+    public function store(Request $request)
     {
-        $request->authenticate();
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $newRequest = LoginRequest::create($request);
+        $newRequest->authenticate();
 
         $request->session()->regenerate();
 
-        return redirect('/#products');
+        return response('logged_in');
     }
 
     /**
@@ -49,7 +55,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
 }

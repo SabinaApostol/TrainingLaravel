@@ -10,24 +10,11 @@ class ProductController extends Controller
 {
     public function index()
     {
-        if (! session('admin')) {
-            if (request()->ajax()) {
-                return response('no_access');
-            }
-            abort(403);
-        }
-
         return view('product');
     }
 
     public function edit(Request $request, $id)
     {
-        if (! session('admin')) {
-            abort(403);
-            if($request->ajax()){
-                return response('no_access');
-            }
-        }
         $product = Product::where('id', $id)->first();
 
         if($request->ajax()){
@@ -38,12 +25,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (! session('admin')) {
-            if($request->ajax()){
-                return response('no_access');
-            }
-        }
-
         $request->validate([
             'title' => 'required',
             'description' => 'required',

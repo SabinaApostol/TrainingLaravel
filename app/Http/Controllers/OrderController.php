@@ -8,13 +8,6 @@ class OrderController extends Controller
 {
     public function show($id)
     {
-        if (! session('admin')) {
-            if(request()->ajax()){
-                return response('no_access');
-            }
-            abort(403);
-        }
-
         $products = Order::join('product_order', 'orders.id', '=', 'product_order.order_id')
             ->join('products', function ($join) use ($id) {
                 $join->on( 'product_order.product_id', '=', 'products.id')
