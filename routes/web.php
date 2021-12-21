@@ -35,11 +35,12 @@ Route::get('loginShow', 'App\Http\Controllers\LoginController@show');
 Route::get('productsShow', 'App\Http\Controllers\ProductsController@show');
 Route::get('product/{id}', 'App\Http\Controllers\ProductController@edit');
 
-Route::post('cart', 'App\Http\Controllers\CartController@store');
+Route::post('cart', 'App\Http\Controllers\CartController@store')->name('cart.store');
 Route::post('/', 'App\Http\Controllers\IndexController@store');
 Route::post('login', 'App\Http\Controllers\LoginController@store');
 
 Route::post('products', 'App\Http\Controllers\ProductsController@delete');
+Route::post('cart_del', 'App\Http\Controllers\CartController@destroy')->name('cart.destroy');
 
 //Route::post('login', 'App\Http\Controllers\LoginController@store');
 //Route::get('/smt', 'App\Http\Controllers\IndexController@showProds');

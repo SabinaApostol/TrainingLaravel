@@ -10,22 +10,18 @@ class NewOrder extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $products = [];
-    public $name;
-    public $email;
-    public $comments;
+    public $order;
+    public $products;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($products, $name, $email, $comments)
+    public function __construct($products, $order)
     {
         $this->products = $products;
-        $this->name = $name;
-        $this->email = $email;
-        $this->comments = $comments;
+        $this->order = $order;
     }
 
     /**

@@ -1,11 +1,11 @@
 @component('mail::message')
-# {{ Lang::get('messages.order') }}
+# {{ __('messages.order') }}
 <table>
     <tr>
-        <th>{{ Lang::get('messages.title') }}</th>
-        <th>{{ Lang::get('messages.description') }}</th>
-        <th>{{ Lang::get('messages.price') }}</th>
-        <th>{{ Lang::get('messages.image') }}</th>
+        <th>{{ __('messages.title') }}</th>
+        <th>{{ __('messages.description') }}</th>
+        <th>{{ __('messages.price') }}</th>
+        <th>{{ __('messages.image') }}</th>
     </tr>
     @foreach ($products as $product)
         <tr>
@@ -16,9 +16,9 @@
         </tr>
     @endforeach
 </table>
-<p>{{ Lang::get('messages.name') }}: {{ $name }}</p>
-<p>{{ Lang::get('messages.email') }}: {{ $email }}</p>
-@if ($comments)
-    <p>{{ Lang::get('messages.comments') }}: {{ $comments }}</p>
+<p>{{ __('messages.name') }}: {{ $order->name }}</p>
+<p>{{ __('messages.email') }}: {{ $order->email }}</p>
+@if ($order->comments)
+    <p>{{ __('messages.comments') }}: {{ $order->comments }}</p>
 @endif
 @endcomponent

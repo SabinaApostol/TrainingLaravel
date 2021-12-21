@@ -14,7 +14,7 @@
             <td>{{ product.price }}</td>
             <td><img :src="getImage(product)"/></td>
             <td>
-                <button @click="remove(product.id)">Remove</button>
+                <button v-on:click="remove(product.id)">Remove</button>
             </td>
         </tr>
     </table>
@@ -59,13 +59,16 @@ export default {
                 this.products = response.data
             });
         },
+        skip() {
+            window.location = '/'
+        },
         getImage(product) {
             return './storage/images/' + product.image
         },
         remove(id) {
-            axios.post('/cart', {'id': id}).then(
+            axios.post('/cart_del', {'id': id}).then( () => {
                 this.show()
-            );
+            });
         },
         checkout(name, email, comments) {
             axios.post('/cart', {'name': name, 'email': email, 'comments': comments}).then( () => {

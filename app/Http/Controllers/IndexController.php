@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Products;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -14,9 +14,9 @@ class IndexController extends Controller
     {
         if (session('id')) {
             $productIds = session()->get('id');
-            $products = Products::whereNotIn('id', $productIds)->get();
+            $products = Product::whereNotIn('id', $productIds)->get();
         } else {
-            $products = Products::all();
+            $products = Product::all();
         }
 
         return response()->json($products);
@@ -27,6 +27,5 @@ class IndexController extends Controller
     {
         $id = $request->id;
         session()->push('id', $id);
-        session()->save();
     }
 }

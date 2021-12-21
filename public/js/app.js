@@ -24675,16 +24675,23 @@ __webpack_require__.r(__webpack_exports__);
         _this2.products = response.data;
       });
     },
+    skip: function skip() {
+      window.location = '/';
+    },
     getImage: function getImage(product) {
       return './storage/images/' + product.image;
     },
     remove: function remove(id) {
-      axios.post('/cart', {
+      var _this3 = this;
+
+      axios.post('/cart_del', {
         'id': id
-      }).then(this.show());
+      }).then(function () {
+        _this3.show();
+      });
     },
     checkout: function checkout(name, email, comments) {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.post('/cart', {
         'name': name,
@@ -24693,7 +24700,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function () {
         window.location = '/';
       })["catch"](function () {
-        _this3.errorMessage = 'Please complete all required fields correctly!';
+        _this4.errorMessage = 'Please complete all required fields correctly!';
       });
     }
   }
@@ -30392,7 +30399,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nh1 {\r\n    text-align: center;\r\n    font-size: 50pt;\n}\ntable, th, td {\r\n    border: 1px solid #000000;\r\n    text-align: center;\r\n    margin-left: auto;\r\n    margin-right: auto;\n}\nimg {\r\n    height: 30px;\r\n    width: 30px;\n}\n.width {\r\n    width: 300px;\n}\n.center {\r\n    margin-left: auto;\r\n    margin-right: auto;\n}\np, ul {\r\n    text-align: center;\n}\n.error {\r\n    color: red;\n}\r\n\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nh1 {\n    text-align: center;\n    font-size: 50pt;\n}\ntable, th, td {\n    border: 1px solid #000000;\n    text-align: center;\n    margin-left: auto;\n    margin-right: auto;\n}\nimg {\n    height: 30px;\n    width: 30px;\n}\n.width {\n    width: 300px;\n}\n.center {\n    margin-left: auto;\n    margin-right: auto;\n}\np, ul {\n    text-align: center;\n}\n.error {\n    color: red;\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
