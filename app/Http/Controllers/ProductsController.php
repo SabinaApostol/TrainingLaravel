@@ -2,24 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OldProducts;
-use App\Models\ProductOrder;
 use Illuminate\Http\Request;
-use App\Models\Products;
+use App\Models\Product;
 
 class ProductsController extends Controller
 {
     public function show()
     {
-        if (! session('admin')) {
-           return  response()->json(['error' => true]);
-        }
-        $products = Products::all();
-        if ($products)  {
-            return response()->json($products);
-        } else {
-            return response()->json([]);
-        }
+        $products = Product::all();
+        return response()->json($products);
     }
 
     public function delete(Request $request)
@@ -28,10 +19,6 @@ class ProductsController extends Controller
             'id' => 'required'
         ]);
 
-        Products::destroy($request->input('id'));
-        $order = ProductOrder::where('product_id', $request->input('id'))->first();
-        if (! $order) {
-            OldProducts::destroy($request->input('id'));
-        }
+        Product::destroy($request->input('id'));
     }
 }

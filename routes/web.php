@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,39 +16,50 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return view('index');
-});
-
+    return view('index', [
+        'auth_user' => Auth::user()
+    ]);
+})->name('index');
 Route::get('/cart', function () {
     return view('index');
 });
 Route::get('/login', function () {
     return view('index');
-});
+})->middleware(['guest'])->name('login');
 Route::get('/products', function () {
     return view('index');
-});
+})->middleware(['auth']);
+Route::get('/product', function () {
+    return view('index');
+})->middleware(['auth']);
+Route::get('/orders', function () {
+    return view('index');
+})->middleware(['auth']);
+Route::get('/order/{id}', function () {
+    return view('index');
+})->middleware(['auth']);
+Route::get('/product/{id}/edit', function () {
+    return view('index');
+})->middleware(['auth']);
 
-Route::get('index', 'App\Http\Controllers\IndexController@show');
-Route::get('cartShow', 'App\Http\Controllers\CartController@show');
-Route::get('loginShow', 'App\Http\Controllers\LoginController@show');
-Route::get('productsShow', 'App\Http\Controllers\ProductsController@show');
-Route::get('product/{id}', 'App\Http\Controllers\ProductController@edit');
+Route::get('index', 'App\Http\Controllers\IndexController@index')->name('index.index');
+Route::get('cartShow', 'App\Http\Controllers\CartController@show')->name('cart.index');
+Route::get('productsShow', 'App\Http\Controllers\ProductsController@show')->middleware(['auth'])->name('products.index');
+Route::get('productShow', 'App\Http\Controllers\ProductController@show')->middleware(['auth']);
+Route::get('productShow/{id}/edit', 'App\Http\Controllers\ProductController@edit')->middleware(['auth'])->name('product.edit');
+Route::get('ordersShow', 'App\Http\Controllers\OrdersController@show')->middleware(['auth'])->name('orders.index');
+Route::get('orderShow/{id}', 'App\Http\Controllers\OrderController@show')->middleware(['auth'])->name('order.index');
 
 Route::post('cart', 'App\Http\Controllers\CartController@store')->name('cart.store');
-Route::post('/', 'App\Http\Controllers\IndexController@store');
-Route::post('login', 'App\Http\Controllers\LoginController@store');
+Route::post('/', 'App\Http\Controllers\IndexController@store')->name('index.store');
+Route::post('products', 'App\Http\Controllers\ProductsController@delete')->middleware(['auth'])->name('products.store');
+Route::post('cart_del', 'App\Http\Controllers\CartController@destroy')->name('cart.destroy')->name('cart.destroy');
+Route::post('product', 'App\Http\Controllers\ProductController@store')->middleware(['auth'])->name('product.store');
+Route::post('productUpdate/{id}', 'App\Http\Controllers\ProductController@update')->middleware(['auth'])->name('product.update');
 
-Route::post('products', 'App\Http\Controllers\ProductsController@delete');
-Route::post('cart_del', 'App\Http\Controllers\CartController@destroy')->name('cart.destroy');
+Route::post('/loginStore', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');
 
-//Route::post('login', 'App\Http\Controllers\LoginController@store');
-//Route::get('/smt', 'App\Http\Controllers\IndexController@showProds');
-//
-//Route::get('cart', 'App\Http\Controllers\CartController@show');
-//Route::get('login', 'App\Http\Controllers\LoginController@show');
-//Route::get('products', 'App\Http\Controllers\ProductsController@show');
-//Route::get('product/{id}', 'App\Http\Controllers\ProductController@edit');
-//Route::get('product', 'App\Http\Controllers\ProductController@show');
-Route::get('orders', 'App\Http\Controllers\OrdersController@show');
-Route::get('order', 'App\Http\Controllers\OrderController@show');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');

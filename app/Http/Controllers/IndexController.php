@@ -10,7 +10,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class IndexController extends Controller
 {
-    public function show()
+    public function index()
     {
         if (session('id')) {
             $productIds = session()->get('id');

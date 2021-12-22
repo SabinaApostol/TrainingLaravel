@@ -24,8 +24,7 @@
             <router-link to="/cart">Go to cart</router-link>
         </div>
     </div>
-    <router-link to="/login"  style="position: absolute; bottom: 0pt; right: 0pt;">Login</router-link>
-<!--    <a href="#login" class="button" style="position: absolute; bottom: 0pt; right: 0pt;">Login</a>-->
+    <router-link to="/login" style="position: absolute; bottom: 0pt; right: 0pt;">Login</router-link>
 </template>
 <script>
 
@@ -33,7 +32,8 @@ export default {
     data() {
         return {
             title: 'List of products',
-            products: null
+            products: null,
+            loggedIn: false
         }
     },
     mounted() {
@@ -51,10 +51,14 @@ export default {
             return './storage/images/' + product.image
         },
         add(id) {
-            axios.post('/', {'id': id}).then(
-                this.show()
-            );
-        }
+            axios.post('/', {'id': id}).then(() => {
+
+                    this.show()
+            });
+        },
+        checkIfLogged() {
+            return !!this.loggedIn;
+        },
     }
 }
 </script>

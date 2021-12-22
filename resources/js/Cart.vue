@@ -14,7 +14,7 @@
             <td>{{ product.price }}</td>
             <td><img :src="getImage(product)"/></td>
             <td>
-                <button v-on:click="remove(product.id)">Remove</button>
+                <button @click="remove(product.id)">Remove</button>
             </td>
         </tr>
     </table>
@@ -58,9 +58,6 @@ export default {
             axios.get('/cartShow').then(response => {
                 this.products = response.data
             });
-        },
-        skip() {
-            window.location = '/'
         },
         getImage(product) {
             return './storage/images/' + product.image

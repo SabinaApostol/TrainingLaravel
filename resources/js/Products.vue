@@ -15,13 +15,18 @@
             <td>{{ product.price }}</td>
             <td><img :src="getImage(product)"/></td>
             <td>
-                <a :href="createLink(product.id)">Edit</a>
+                <router-link :to="createLink(product.id)">Edit</router-link>
             </td>
             <td>
-                <button @click="deleteProd(product.id)">Remove</button>
+                <button @click="deleteProd(product.id)">Delete</button>
             </td>
         </tr>
     </table>
+    <br>
+    <div style="text-align: center;">
+        <router-link to="/product">Add</router-link>
+    </div>
+    <button @click="logout" style="position: absolute; bottom: 0pt;">Logout</button>
 </template>
 <script>
 export default {
@@ -36,7 +41,6 @@ export default {
             if (response.data.error) {
                 window.location = '/'
             } else {
-
                 this.products = response.data
             }
         });
@@ -56,12 +60,17 @@ export default {
             return './storage/images/' + product.image
         },
         createLink(id) {
-            return '/product/' + id
+            return '/product/' + id + '/edit'
         },
         deleteProd(id) {
-            axios.post('/products', {'id': id}).then(
-                this.show()
-            );
+            axios.post('/products', {'id': id}).then(() => {
+                    this.show()
+            });
+        },
+        logout() {
+            axios.post('/logout').then(() => {
+                window.location = '/'
+            });
         }
     }
 }
