@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OldProducts;
-use App\Models\ProductOrder;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function create()
     {
         return view('product');
     }

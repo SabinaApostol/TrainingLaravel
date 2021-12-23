@@ -21,12 +21,12 @@ class CartController extends Controller
         return view('cart', ['products' => new \stdClass()]);
     }
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        if ($request->has('id')) {
+        if ($id) {
             $productIds = session()->get('id');
 
-            if (($key = array_search($request->input('id'), $productIds)) !== false) {
+            if (($key = array_search($id, $productIds)) !== false) {
                 unset($productIds[$key]);
             }
 

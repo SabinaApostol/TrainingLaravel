@@ -24,10 +24,10 @@
             <td>{{ $product->price }}</td>
             <td><img src="{{ asset('/storage/images/' . $product->image) }}"/></td>
             <td>
-                <form action="{{ route('cart.destroy') }}" method="post">
+                <form action="{{ route('cart.destroy', ['id' => $product->id]) }}" method="post">
                     @csrf
                     @method('delete')
-                    <input name="id" value="{{ $product->id  }}" type="hidden">
+{{--                    <input name="id" value="{{ $product->id  }}" type="hidden">--}}
                     <button type="submit" name="remove" value="remove">{{__('messages.remove') }}</button>
                 </form>
             </td>

@@ -12,13 +12,12 @@ class ProductsController extends Controller
         return view('products', ['products' => Product::all()]);
     }
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $request->validate([
-            'id' => 'required'
-        ]);
-
-        Product::where('id', $request->input('id'))->delete();
-        return view('products', ['products' =>  Product::all()]);
+        if ($id) {
+            Product::where('id', $id)->delete();
+            return view('products', ['products' =>  Product::all()]);
+        }
+        abort(404);
     }
 }

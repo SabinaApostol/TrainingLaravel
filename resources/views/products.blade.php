@@ -32,10 +32,9 @@
             <a href="product/{{ $product->id }}/edit">{{ __('messages.edit') }}</a>
         </td>
         <td>
-            <form action="products" method="post">
+            <form action="{{ route('products.destroy', ['id' => $product->id]) }}" method="post">
                 @method('delete')
                 @csrf
-                <input name="id" value="{{ $product->id }}" type="hidden">
                 <button name="delete" value="delete">{{ __('messages.delete') }}</button>
             </form>
         </td>
@@ -44,5 +43,5 @@
 </table>
 <br>
 <div style="text-align: center;">
-    <a href="product">{{ __('messages.add') }}</a>
+    <a href="{{ route('product.create') }}">{{ __('messages.add') }}</a>
 </div>

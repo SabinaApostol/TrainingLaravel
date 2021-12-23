@@ -10,7 +10,7 @@
     </div>
 @endif
 <h1 class="center">{{ __('messages.add_edit') }}</h1>
-<form style="text-align: center" action="{{ $product->id ?? NULL }}" method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" style="text-align: center" action="@if($product->id ?? NULL) {{ route('product.update', ['id' => $product->id]) }} @else {{ route('product.store') }} @endif">
     @csrf
     @if($product->id ?? NULL)
         @method('put')
