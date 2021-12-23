@@ -6,10 +6,120 @@
 
     <!-- Custom JS script -->
     <script type="text/javascript">
-        aux = document.cookie.split(';')[0];
-        csrf = aux.split('=');
+        loggedIn = false
+        aux = document.cookie.split(';');
+        for (val in aux) {
+            aux2 = aux[val].split('=');
+            if (aux2[0] === 'csrf') {
+                csrf = aux2[1];
+            }
+        }
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': csrf
+            }
+        });
         $(document).ready(function () {
-            function renderList(products) {
+            $('#formCart').on('submit', function (e) {
+                e.preventDefault();
+                let name = $('#name').val();
+                let email = $('#email').val();
+                let comments = $('#comments').val();
+
+                $.ajax({
+                    url: 'cart',
+                    type: 'POST',
+                    data: {
+                        name: name,
+                        email: email,
+                        comments: comments,
+                    },
+                    success: function () {
+                        window.location.replace("#");
+                    },
+                    error: function (response) {
+                        let res = response.responseJSON.errors;
+                        if (res.name) {
+                            $('.cart .span_name').html(res.name);
+                        }
+                        if (res.email) {
+                            $('.cart .span_email').html(res.email);
+                        }
+                    },
+                });
+            });
+            $('#formProduct').on('submit', function (e) {
+                e.preventDefault();
+                let formData = new FormData();
+                formData.append('title', $('#title').val());
+                formData.append('description', $('#description').val());
+                formData.append('price', $('#price').val());
+                formData.append('file', $('#image')[0].files[0]);
+                let url = window.location.hash.split('#')[1];
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function () {
+                        window.location.replace("#products");
+                    },
+                    error: function (response) {
+                        let res = response.responseJSON.errors;
+                        if (res.title) {
+                            $('.product .span_title').html(res.title);
+                        }
+                        if (res.description) {
+                            $('.product .span_description').html(res.description);
+                        }
+                        if (res.price) {
+                            $('.product .span_price').html(res.price);
+                        }
+                        if (res.file) {
+                            $('.product .span_file').html(res.file[0]);
+                        }
+                    }
+                });
+            });
+            $('#formLogin').on('submit', function (e) {
+                e.preventDefault();
+                let email = $('#email').val();
+                let password = $('#password').val();
+                $.ajax({
+                    url: 'login',
+                    type: 'POST',
+                    data: {
+                        email: email,
+                        password: password,
+                    },
+                    success: function (response) {
+                        window.location.replace("#products");
+                    },
+                    error: function (response) {
+                        let res = response.responseJSON.errors;
+                        if (res.email) {
+                            $('.login .span_email').html(res.email);
+                        } else  if (res.password) {
+                            $('.login .span_password').html(res.password);
+                        } else {
+                            $('.login .span_login').text('Invalid credentials');
+                        }
+                    },
+                });
+            });
+            $('#formLogout').on('submit', function (e) {
+                e.preventDefault();
+                loggedIn = false
+                $.ajax({
+                    url: 'logout',
+                    type: 'POST',
+                    success: function () {
+                        window.location.replace("#")
+                    }
+                });
+            });
+            function renderList(products, page) {
                 html = [
                     '<tr>',
                     '<th>Title</th>',
@@ -17,9 +127,9 @@
                     '<th>Price</th>',
                     '<th>Image</th>',
                 ].join('');
-                if (window.location.hash === '#cart') {
+                if (page === 'cart') {
                     html += '<th>Remove from cart</th></tr>';
-                } else if(window.location.hash === '#products') {
+                } else if (window.location.hash === '#products') {
                     html += '<th>Edit product</th>';
                     html += '<th>Delete products</th></tr>';
                 } else {
@@ -33,112 +143,51 @@
                         '<td>' + product.price + '</td>',
                         '<td><img src="/storage/images/' + product.image + '"/></td>',
                     ].join('');
-
-                    if (window.location.hash === '#cart') {
+                    if (page === 'cart') {
                         html += '<td>';
-                        html += '<form id="formR" action="cart_destroy" method="post">';
-                        html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
+                        html += '<form action="cart_destroy" method="post">';
+                        html += '<input type="hidden" name="_token" value="' + csrf +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
                         html += '<button name="remove" value="remove">Remove</button>';
                         html += '</form></td></tr><br>';
-                    } else if (window.location.hash === '#products') {
+                    } else if (page === 'products') {
                         html += '<td><a href="#product/' + product.id + '">Edit</a></td>';
                         html += '<td>';
                         html += '<form action="products" method="post">';
-                        html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
+                        html += '<input type="hidden" name="_token" value="' + csrf +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
                         html += '<button name="delete" value="delete">Delete</button>';
                         html += '</form></td></tr>';
                     } else {
                         html += '<td>';
                         html += '<form action="/" method="post">';
-                        html += '<input type="hidden" name="_token" value="' + csrf[1] +'">';
+                        html += '<input type="hidden" name="_token" value="' + csrf +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
                         html += '<button name="add" value="add">Add</button>';
                         html += '</form></td></tr>';
                     }
                 });
-                if (window.location.hash === '#cart') {
+                if (page === 'cart') {
                     htmlFrom = [
-                        '<input type="hidden" name="_token" value="' + csrf[1] +'">',
-                        '<input id="name" type="text" name="name" placeholder="Name" class="width"><br>',
-                        '<input id="email" type="text" name="email" placeholder="Email" class="width"><br>',
+                        '<input id="name" type="text" name="name" placeholder="Name" class="width"><br><span style="color: red" class="span_name"></span><br>',
+                        '<input id="email" type="text" name="email" placeholder="Email" class="width"><br><span style="color: red" class="span_email"></span><br>',
                         '<textarea id="comments" name="comments" cols="40" rows="10" placeholder="Comments"></textarea>',
                         '<br><div style="text-align: center;">',
                         '<button type="submit" id="button" name="checkout" value="checkout">Checkout</button></div>'
                     ].join('');
                     $('.cart .formCart').html(htmlFrom);
-                    $('#formCart').on('submit', function (e) {
-                        e.stopImmediatePropagation();
-                        e.preventDefault();
-                        let name = $('#name').val();
-                        let email = $('#email').val();
-                        let comments = $('#comments').val();
-
-                        $.ajax({
-                            url: "cart",
-                            type: "POST",
-                            data: {
-                                "_token": csrf[1],
-                                name: name,
-                                email: email,
-                                comments: comments,
-                            },
-                            success: function () {
-                                window.location.replace("#");
-                            },
-                            error: function (response) {
-                                let res = response.responseJSON.errors;
-                                if (res.name) {
-                                    html += $('#span').text(res.name);
-                                }
-                                if (res.email) {
-                                    html += $('#span').text(res.email);
-                                }
-                            },
-                        });
-                    });
-
                 }
                 return html;
             }
             function createLogin() {
                 htmlForm = [
-                    '<input type="hidden" name="_token" value="' + csrf[1] +'">',
-                    '<input id="email" type="text" name="email" placeholder="Email">',
-                    '<br><input id="password" type="password" name="password" placeholder="Password">',
-                    '<br><button type="submit" name="login" value="login">Login</button>',
+                    '<input id="email" type="text" name="email" placeholder="Email"><br>',
+                    '<span style="color: red" class="span_email"></span><br>',
+                    '<input id="password" type="password" name="password" placeholder="Password"><br>',
+                    '<span style="color: red" class="span_password"></span><br>',
+                    '<button type="submit" name="login" value="login">Login</button><br>',
+                    '<span style="color: red" class="span_login"></span><br>',
                 ].join('');
-                $('#formLogin').on('submit', function (e) {
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                    let email = $('#email').val();
-                    let password = $('#password').val();
-                    $.ajax({
-                        url: "login",
-                        type: "POST",
-                        data: {
-                            "_token": csrf[1],
-                            email: email,
-                            password: password,
-                        },
-                        success: function (response) {
-                            if(response === 'logged_in') {
-                                window.location.replace("#products");
-                            }
-                        },
-                        error: function (response) {
-                            let res = response.responseJSON.errors;
-                            if (res.email) {
-                                htmlForm += $('#spanLogin').text(res.email);
-                            } else  if (res.password) {
-                                htmlForm += $('#spanLogin').text(res.password);
-                            } else {
-                                htmlForm += $('#spanLogin').text('Invalid credentials');
-                            }
-                        },
-                    });
-                });
                 return htmlForm;
             }
             function createProductForm(title, description, price) {
@@ -146,53 +195,18 @@
                     title = price = description = '';
                 }
                 htmlForm = [
-                    '<input class="width" type="hidden" name="_token" value="' + csrf[1] +'"><br>',
                     '<input class="width" id="title" type="text" name="title" placeholder="Title" value="' + title + '"><br>',
+                    '<span style="color: red" class="span_title"></span><br>',
                     '<input class="width" id="description" type="text" name="description" placeholder="Description", value="' + description + '"><br>',
+                    '<span style="color: red" class="span_description"></span><br>',
                     '<input class="width" id="price" type="number" step="0.01" name="price" placeholder="Price" value="' + price + '"><br>',
+                    '<span style="color: red" class="span_price"></span><br>',
                     '<input type="file" name="file" id="image">',
+                    '<span style="color: red" class="span_file"></span><br>',
                     '<button name="save" value="save">Save</button>',
                 ].join('');
-
-                $('#formProduct').on('submit', function (e) {
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                    let formData = new FormData();
-                    formData.append('_token', csrf[1]);
-                    formData.append('title', $('#title').val());
-                    formData.append('description', $('#description').val());
-                    formData.append('price', $('#price').val());
-                    formData.append('file', $('#image')[0].files[0]);
-                    let url = window.location.hash.split('#')[1];
-                    $.ajax({
-                        url: url,
-                        type: "POST",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function () {
-                            window.location.replace("#products");
-                        },
-                        error: function (response) {
-                            let res = response.responseJSON.errors;
-                            if (res.title) {
-                                htmlForm += $('#spanErrorProduct').text(res.title);
-                            }
-                            if (res.description) {
-                                htmlForm += $('#spanErrorProduct').text(res.description);
-                            }
-                            if (res.price) {
-                                htmlForm += $('#spanErrorProduct').text(res.price);
-                            }
-                            if (res.file) {
-                                htmlForm += $('#spanErrorProduct').text(res.file);
-                            }
-                        }
-                    });
-                });
                 return htmlForm;
             }
-
             function renderListOrders(orders) {
                 html = [
                     '<tr>',
@@ -215,7 +229,7 @@
                 });
                 return html;
             }
-            function renderProductsInOrder(products){
+            function renderProductsInOrder(products) {
                 html = [
                     '<tr>',
                     '<th>Title</th>',
@@ -246,40 +260,22 @@
             }
             function createLogout() {
                 html = [
-                    // '<form action="logout" method="post">',
-                    '<input class="width" type="hidden" name="_token" value="' + csrf[1] +'"><br>',
                     '<button type="submit" name="logout" value="logout">Logout</button>',
-                    // '</form>'
                 ].join('');
-                $('#formLogout').on('submit', function (e) {
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                    $.ajax({
-                        url: 'logout',
-                        type: "POST",
-                        data: {
-                            "_token": csrf[1]
-                        },
-                        success: function (response) {
-                            window.location.replace("#")
-                        }
-                    });
-                });
                 return html;
             }
             /**
              * URL hash change handler
              */
             window.onhashchange = function () {
-                // First hide all the pages
                 $('.page').hide();
                 switch(window.location.hash) {
                     case '#orders':
-                        $('.orders').show();
                         $.ajax('orders', {
                             dataType: 'json',
                             success: function (response) {
                                 $('.orders .list').html(renderListOrders(response));
+                                $('.orders').show();
                             },
                             error: function () {
                                 window.location.replace('#');
@@ -289,8 +285,8 @@
                     case '#product':
                         $.ajax('product', {
                             success: function () {
-                                    $('.product').show();
-                                    $('.product .formProduct').html(createProductForm());
+                                $('.product .formProduct').html(createProductForm());
+                                $('.product').show();
                             },
                             error: function () {
                                 window.location.replace('#');
@@ -298,16 +294,12 @@
                         });
                         break;
                     case '#products':
-                        $.ajax('product', {
-                            success: function () {
+                        $.ajax('products', {
+                            dataType: 'json',
+                            success: function (response) {
+                                $('.products .list').html(renderList(response, 'products'));
+                                $('.products .formLogout').html(createLogout());
                                 $('.products').show();
-                                $.ajax('products', {
-                                    dataType: 'json',
-                                    success: function (response) {
-                                        $('.products .list').html(renderList(response));
-                                        $('.products .formLogout').html(createLogout());
-                                    }
-                                });
                             },
                             error: function () {
                                 window.location.replace('#');
@@ -315,71 +307,55 @@
                         });
                         break;
                     case '#login':
-                        $('.login').show();
-                        $.ajax('login', {
-                            success: function () {
-                                $('.login .formLogin').html(createLogin());
-                            }
-                        });
+                         if (! loggedIn) {
+                            $('.login').show();
+                            $('.login .formLogin').html(createLogin());
+                            loggedIn = true;
+                         } else {
+                             window.location.replace('#products');
+                         }
                         break;
                     case '#cart':
-                        // Show the cart page
-                        $('.cart').show();
-                        // Load the cart products from the server
                         $.ajax('cart', {
                             dataType: 'json',
                             success: function (response) {
-                                // Render the products in the cart list
-                                $('.cart .list').html(renderList(response));
+                                $('.cart .list').html(renderList(response, 'cart'));
+                                $('.cart').show();
                             }
                         });
                         break;
                     default:
                         if (window.location.hash.split('/')[0] === '#product') {
-                            $.ajax('product', {
-                                success: function () {
+                            $.ajax('/product/' + window.location.hash.split('/')[1] + '/edit', {
+                                dataType: 'json',
+                                success: function (response) {
+                                    $('.product .formProduct').html(createProductForm(response.title, response.description, response.price, response.image));
                                     $('.product').show();
-                                    $.ajax('/product/' + window.location.hash.split('/')[1] + '/edit', {
-                                        dataType: 'json',
-                                        success: function (response) {
-                                            $('.product .formProduct').html(createProductForm(response.title, response.description, response.price, response.image));
-                                        }
-                                    });
                                 },
                                 error: function () {
                                     window.location.replace('#');
                                 }
                             });
-
                             break;
                         }
                         if (window.location.hash.split('/')[0] === '#order') {
-                            $.ajax('product', {
-                                success: function () {
+                            $.ajax('order/' + window.location.hash.split('/')[1], {
+                                success: function (response) {
+                                    $('.order .table').html(renderProductsInOrder(response.products));
+                                    $('.order .list').html(renderListOrderDetails(response.order));
                                     $('.order').show();
-                                    $.ajax('order/' + window.location.hash.split('/')[1], {
-                                        success: function (response) {
-                                            $('.order .table').html(renderProductsInOrder(response.products));
-                                            $('.order .list').html(renderListOrderDetails(response.order));
-                                        }
-                                    });
                                 },
                                 error: function () {
                                     window.location.replace('#');
                                 }
                             });
-
                             break;
                         }
-                        // If all else fails, always default to index
-                        // Show the index page
-                        $('.index').show();
-                        // Load the index products from the server
                         $.ajax('/', {
                             dataType: 'json',
                             success: function (response) {
-                                // Render the products in the index list
                                 $('.index .list').html(renderList(response));
+                                $('.index').show();
                             }
                         });
                         break;

@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -25,7 +26,7 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      *
      * @param  \App\Http\Requests\Auth\LoginRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -38,8 +39,6 @@ class AuthenticatedSessionController extends Controller
         $newRequest->authenticate();
 
         $request->session()->regenerate();
-
-        return response('logged_in');
     }
 
     /**

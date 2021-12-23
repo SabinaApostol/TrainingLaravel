@@ -16,9 +16,9 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::get('/', 'App\Http\Controllers\IndexController@index')->name('index.index');
 Route::get('cart', 'App\Http\Controllers\CartController@index')->name('cart.index');
-Route::get('products', 'App\Http\Controllers\ProductsController@index')->name('products.index');
-Route::get('product/{id}/edit', 'App\Http\Controllers\ProductController@edit')->name('product.edit');
-Route::get('product', 'App\Http\Controllers\ProductController@index')->middleware(['auth'])->name('product.index');
+Route::get('products', 'App\Http\Controllers\ProductsController@index')->middleware(['auth'])->name('products.index');
+Route::get('product/{id}/edit', 'App\Http\Controllers\ProductController@edit')->middleware(['auth'])->name('product.edit');
+Route::get('product/create', 'App\Http\Controllers\ProductController@create')->middleware(['auth'])->name('product.index');
 Route::get('orders', 'App\Http\Controllers\OrdersController@index')->middleware(['auth'])->name('orders.index');
 Route::get('order', 'App\Http\Controllers\OrderController@index')->middleware(['auth'])->name('order.index');
 Route::get('order/{id}', 'App\Http\Controllers\OrderController@show')->middleware(['auth'])->name('order.show');
