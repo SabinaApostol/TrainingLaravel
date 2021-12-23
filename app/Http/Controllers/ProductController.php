@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -22,11 +23,15 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'description' => 'required',
             'price' => 'required|numeric'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
 
         if ($request->hasFile('file')) {
             request()->validate([
@@ -53,12 +58,16 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'description' => 'required',
             'price' => 'required|numeric',
             'file' => 'required|image|mimes:jpg,png,jpeg'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
 
         $request->file('file')->store('images', 'public');
 

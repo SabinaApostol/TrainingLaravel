@@ -21,14 +21,14 @@
     <br>
     <form style="text-align: center;">
         <input type="text" placeholder="Name" required v-model="name" class="width">
+        <small style="color: red"><br>{{ error_name }} </small>
         <br>
         <input type="email" placeholder="Email" required v-model="email" class="width">
+        <small style="color: red"><br>{{ error_email }} </small>
         <br>
         <textarea cols="40" rows="10" required v-model="comments" placeholder="Comments"></textarea>
         <br>
         <button @click="checkout(name, email, comments)">Checkout</button>
-        <br>
-        <span style="color: red">{{ errorMessage }}</span>
     </form>
     <div style="text-align: center;">
             <router-link to="/">Go to index</router-link>
@@ -45,7 +45,10 @@ export default {
             name: null,
             email: null,
             comments: null,
-            errorMessage: ''
+            errorMessage: '',
+            error_name: '',
+            error_email: '',
+            _this: null
         }
     },
     mounted() {
@@ -71,8 +74,10 @@ export default {
             axios.post('/cart', {'name': name, 'email': email, 'comments': comments}).then( () => {
                     window.location = '/'
                 })
-                .catch(() => {
-                    this.errorMessage = 'Please complete all required fields correctly!'
+                .catch((error) => {
+                    console.error(error)
+                    this.error_name = error.response.data.error.name
+                    this.error_email = error.response.data.error.email
                 });
         }
     }

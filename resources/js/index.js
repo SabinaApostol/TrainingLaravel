@@ -1,11 +1,11 @@
 import { createWebHistory, createRouter } from "vue-router";
-import Index from './Index.vue';
-import Cart from './Cart.vue';
-import Login from './Login.vue';
-import Products from './Products.vue';
-import Product from './Product.vue';
-import Orders from './Orders.vue';
-import Order from './Order.vue';
+import Index from './Pages/Index.vue';
+import Cart from './Pages/Cart.vue';
+import Login from './Pages/Login.vue';
+import Products from './Pages/Products.vue';
+import Product from './Pages/Product.vue';
+import Orders from './Pages/Orders.vue';
+import Order from './Pages/Order.vue';
 
 window.Vue = require('vue');
 window.axios = require('axios');

@@ -108,7 +108,7 @@ return [
 
     'password_timeout' => 10800,
 
-    'admin_username' => 'admin',
+    'admin_email' => 'admin@admin.com',
 
     'admin_password' => 'password123'
 
