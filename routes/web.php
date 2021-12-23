@@ -38,9 +38,6 @@ Route::get('/orders', function () {
 Route::get('/order/{id}', function () {
     return view('index');
 })->middleware(['auth']);
-Route::get('/product/{id}/edit', function () {
-    return view('index');
-})->middleware(['auth']);
 
 Route::get('index', 'App\Http\Controllers\IndexController@index')->name('index.index');
 Route::get('cartShow', 'App\Http\Controllers\CartController@show')->name('cart.index');

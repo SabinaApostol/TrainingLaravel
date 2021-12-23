@@ -51,7 +51,6 @@ export default {
                 if (response.data.error) {
                     window.location = '/'
                 } else {
-
                     this.products = response.data
                 }
             });

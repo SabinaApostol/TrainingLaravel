@@ -19,7 +19,7 @@
         </tr>
     </table>
     <br>
-    <form style="text-align: center;">
+    <form style="text-align: center;"  @submit.prevent="submit(name, email, comments)">
         <input type="text" placeholder="Name" v-model="name" class="width">
         <small style="color: red"><br>{{ error_name }} </small>
         <br>
@@ -28,7 +28,7 @@
         <br>
         <textarea cols="40" rows="10" v-model="comments" placeholder="Comments"></textarea>
         <br>
-        <button @click="checkout(name, email, comments)">Checkout</button>
+        <button type="submit">Checkout</button>
     </form>
     <div style="text-align: center;">
             <router-link to="/">Go to index</router-link>
@@ -70,14 +70,14 @@ export default {
                 this.show()
             });
         },
-        checkout(name, email, comments) {
+        async submit(name, email, comments) {
             axios.post('/cart', {'name': name, 'email': email, 'comments': comments}).then( () => {
-                    window.location = '/'
-                })
+                window.location = '/'
+            })
                 .catch((error) => {
                     console.error(error)
-                    this.error_name = error.response.data.error.name
-                    this.error_email = error.response.data.error.email
+                    this.error_name = error.response.data.error.name[0]
+                    this.error_email = error.response.data.error.email[0]
                 });
         }
     }

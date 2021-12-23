@@ -30,13 +30,17 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => $validator->errors()->toArray()], 401);
         }
 
         if ($request->hasFile('file')) {
-            request()->validate([
+            $validator = Validator::make($request->all(), [
                 'file' => 'required|image|mimes:jpg,png,jpeg'
             ]);
+
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 401);
+            }
 
             $request->file('file')->store('images', 'public');
             Product::where('id', $id)
