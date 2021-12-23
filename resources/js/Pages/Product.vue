@@ -36,8 +36,6 @@ export default {
         }
     },
     mounted() {
-        this.path = window.location.pathname.split('/')
-        this.uri = 'product/' + this.path[2]
         if (this.path !== '/product') {
             axios.get('/productShow/' + this.path[2] + '/edit').then(response => {
                     if (response.data.error) {
@@ -68,6 +66,8 @@ export default {
             this.file = event.target.files[0];
         },
         save() {
+            this.path = window.location.pathname.split('/')
+            this.uri = 'product/' + this.path[2]
             const data = new FormData();
             data.append('title', this.title);
             data.append('description', this.description);
@@ -78,11 +78,7 @@ export default {
                 }
                 data.append('file', this.file);
                 axios.post('product', data).then(response => {
-                    if (response.data.error) {
-                        this.errorMessage = response.data.errorMessage;
-                    } else {
-                        window.location = '/products'
-                    }
+                   window.location = '/products'
                 }).catch((error) => {
                     console.error(error)
                     this.error_title = error.response.data.error.title
@@ -94,12 +90,8 @@ export default {
                 if (this.file) {
                     data.append('file', this.file)
                 }
-                axios.post('/productUpdate/' + this.path[2], data).then(response => {
-                    if (response.data.error) {
-                        this.errorMessage = response.data.errorMessage;
-                    } else {
-                        window.location = '/products'
-                    }
+                axios.post('/productUpdate/' + this.path[2], data).then(() => {
+                    window.location = '/products'
                 }).catch((error) => {
                     console.error(error)
                     this.error_title = error.response.data.error.title

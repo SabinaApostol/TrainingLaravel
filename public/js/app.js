@@ -24929,9 +24929,6 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    this.path = window.location.pathname.split('/');
-    this.uri = 'product/' + this.path[2];
-
     if (this.path !== '/product') {
       axios.get('/productShow/' + this.path[2] + '/edit').then(function (response) {
         if (response.data.error) {
@@ -24964,6 +24961,8 @@ __webpack_require__.r(__webpack_exports__);
     save: function save() {
       var _this2 = this;
 
+      this.path = window.location.pathname.split('/');
+      this.uri = 'product/' + this.path[2];
       var data = new FormData();
       data.append('title', this.title);
       data.append('description', this.description);
@@ -24976,11 +24975,7 @@ __webpack_require__.r(__webpack_exports__);
 
         data.append('file', this.file);
         axios.post('product', data).then(function (response) {
-          if (response.data.error) {
-            _this2.errorMessage = response.data.errorMessage;
-          } else {
-            window.location = '/products';
-          }
+          window.location = '/products';
         })["catch"](function (error) {
           console.error(error);
           _this2.error_title = error.response.data.error.title;
@@ -24993,12 +24988,8 @@ __webpack_require__.r(__webpack_exports__);
           data.append('file', this.file);
         }
 
-        axios.post('/productUpdate/' + this.path[2], data).then(function (response) {
-          if (response.data.error) {
-            _this2.errorMessage = response.data.errorMessage;
-          } else {
-            window.location = '/products';
-          }
+        axios.post('/productUpdate/' + this.path[2], data).then(function () {
+          window.location = '/products';
         })["catch"](function (error) {
           console.error(error);
           _this2.error_title = error.response.data.error.title;
@@ -25207,7 +25198,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   ))]), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "text",
     placeholder: "Name",
-    required: "",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.name = $event;
     }),
@@ -25219,7 +25209,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   )]), _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "email",
     placeholder: "Email",
-    required: "",
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
       return $data.email = $event;
     }),
@@ -25231,7 +25220,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   )]), _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
     cols: "40",
     rows: "10",
-    required: "",
     "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
       return $data.comments = $event;
     }),

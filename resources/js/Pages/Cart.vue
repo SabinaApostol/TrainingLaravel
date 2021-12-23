@@ -20,13 +20,13 @@
     </table>
     <br>
     <form style="text-align: center;">
-        <input type="text" placeholder="Name" required v-model="name" class="width">
+        <input type="text" placeholder="Name" v-model="name" class="width">
         <small style="color: red"><br>{{ error_name }} </small>
         <br>
-        <input type="email" placeholder="Email" required v-model="email" class="width">
+        <input type="email" placeholder="Email" v-model="email" class="width">
         <small style="color: red"><br>{{ error_email }} </small>
         <br>
-        <textarea cols="40" rows="10" required v-model="comments" placeholder="Comments"></textarea>
+        <textarea cols="40" rows="10" v-model="comments" placeholder="Comments"></textarea>
         <br>
         <button @click="checkout(name, email, comments)">Checkout</button>
     </form>
