@@ -6,6 +6,9 @@
 
     <!-- Custom JS script -->
     <script type="text/javascript">
+        function translate (data) {
+            return data
+        }
         loggedIn = false
         aux = document.cookie.split(';');
         for (val in aux) {
@@ -122,18 +125,18 @@
             function renderList(products, page) {
                 html = [
                     '<tr>',
-                    '<th>Title</th>',
-                    '<th>Description</th>',
-                    '<th>Price</th>',
-                    '<th>Image</th>',
+                    '<th>' + translate('Title') + '</th>',
+                    '<th>' + translate('Description') + '</th>',
+                    '<th>' + translate('Price') + '</th>',
+                    '<th>' + translate('Image') + '</th>',
                 ].join('');
                 if (page === 'cart') {
-                    html += '<th>Remove from cart</th></tr>';
+                    html += '<th>' + translate('Remove from cart') + '</th></tr>';
                 } else if (window.location.hash === '#products') {
-                    html += '<th>Edit product</th>';
-                    html += '<th>Delete products</th></tr>';
+                    html += '<th>' + translate('Edit product') + '</th>';
+                    html += '<th>' + translate('Delete products') + '</th></tr>';
                 } else {
-                    html += '<th>Add to cart</th></tr>';
+                    html += '<th>' + translate('Add to cart') + '</th></tr>';
                 }
                 $.each(products, function (key, product) {
                     html += [
@@ -148,32 +151,32 @@
                         html += '<form action="cart_destroy" method="post">';
                         html += '<input type="hidden" name="_token" value="' + csrf +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
-                        html += '<button name="remove" value="remove">Remove</button>';
+                        html += '<button name="remove" value="remove">' + translate('Remove') + '</button>';
                         html += '</form></td></tr><br>';
                     } else if (page === 'products') {
-                        html += '<td><a href="#product/' + product.id + '">Edit</a></td>';
+                        html += '<td><a href="#product/' + product.id + '">' + translate('Edit') + '</a></td>';
                         html += '<td>';
                         html += '<form action="products" method="post">';
                         html += '<input type="hidden" name="_token" value="' + csrf +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
-                        html += '<button name="delete" value="delete">Delete</button>';
+                        html += '<button name="delete" value="delete">' + translate('Delete') + '</button>';
                         html += '</form></td></tr>';
                     } else {
                         html += '<td>';
                         html += '<form action="/" method="post">';
                         html += '<input type="hidden" name="_token" value="' + csrf +'">';
                         html += '<input name="id" value="' + product.id + '" type="hidden">';
-                        html += '<button name="add" value="add">Add</button>';
+                        html += '<button name="add" value="add">' + translate('Add') + '</button>';
                         html += '</form></td></tr>';
                     }
                 });
                 if (page === 'cart') {
                     htmlFrom = [
-                        '<input id="name" type="text" name="name" placeholder="Name" class="width"><br><span style="color: red" class="span_name"></span><br>',
-                        '<input id="email" type="text" name="email" placeholder="Email" class="width"><br><span style="color: red" class="span_email"></span><br>',
-                        '<textarea id="comments" name="comments" cols="40" rows="10" placeholder="Comments"></textarea>',
+                        '<input id="name" type="text" name="name" placeholder="' + translate('Name') + '" class="width"><br><span style="color: red" class="span_name"></span><br>',
+                        '<input id="email" type="text" name="email" placeholder="' + translate('Email') + '" class="width"><br><span style="color: red" class="span_email"></span><br>',
+                        '<textarea id="comments" name="comments" cols="40" rows="10" placeholder="' + translate('Comments') + '"></textarea>',
                         '<br><div style="text-align: center;">',
-                        '<button type="submit" id="button" name="checkout" value="checkout">Checkout</button></div>'
+                        '<button type="submit" id="button" name="checkout" value="checkout">' + translate('Checkout') + '</button></div>'
                     ].join('');
                     $('.cart .formCart').html(htmlFrom);
                 }
@@ -181,11 +184,11 @@
             }
             function createLogin() {
                 htmlForm = [
-                    '<input id="email" type="text" name="email" placeholder="Email"><br>',
+                    '<input id="email" type="text" name="email" placeholder="' + translate('Email') + '"><br>',
                     '<span style="color: red" class="span_email"></span><br>',
-                    '<input id="password" type="password" name="password" placeholder="Password"><br>',
+                    '<input id="password" type="password" name="password" placeholder="' + translate('Password') + '"><br>',
                     '<span style="color: red" class="span_password"></span><br>',
-                    '<button type="submit" name="login" value="login">Login</button><br>',
+                    '<button type="submit" name="login" value="login">' + translate('Login') + '</button><br>',
                     '<span style="color: red" class="span_login"></span><br>',
                 ].join('');
                 return htmlForm;
@@ -195,26 +198,26 @@
                     title = price = description = '';
                 }
                 htmlForm = [
-                    '<input class="width" id="title" type="text" name="title" placeholder="Title" value="' + title + '"><br>',
+                    '<input class="width" id="title" type="text" name="title" placeholder="' + translate('Title') + '" value="' + title + '"><br>',
                     '<span style="color: red" class="span_title"></span><br>',
-                    '<input class="width" id="description" type="text" name="description" placeholder="Description", value="' + description + '"><br>',
+                    '<input class="width" id="description" type="text" name="description" placeholder="' + translate('Description') + '", value="' + description + '"><br>',
                     '<span style="color: red" class="span_description"></span><br>',
-                    '<input class="width" id="price" type="number" step="0.01" name="price" placeholder="Price" value="' + price + '"><br>',
+                    '<input class="width" id="price" type="number" step="0.01" name="price" placeholder="' + translate('Price') + '" value="' + price + '"><br>',
                     '<span style="color: red" class="span_price"></span><br>',
                     '<input type="file" name="file" id="image">',
                     '<span style="color: red" class="span_file"></span><br>',
-                    '<button name="save" value="save">Save</button>',
+                    '<button name="save" value="save">' + translate('Save') + '</button>',
                 ].join('');
                 return htmlForm;
             }
             function renderListOrders(orders) {
                 html = [
                     '<tr>',
-                    '<th>Date</th>',
-                    '<th>Customer name</th>',
-                    '<th>Customer email</th>',
-                    '<th>Total</th>',
-                    '<th>Details</th>',
+                    '<th>' + translate('Date') + '</th>',
+                    '<th>' + translate('Customer name') + '</th>',
+                    '<th>' + translate('Customer email') + '</th>',
+                    '<th>' + translate('Total') + '</th>',
+                    '<th>' + translate('Details') + '</th>',
                     '</tr>',
                 ].join('');
                 $.each(orders, function (key, order) {
@@ -224,7 +227,7 @@
                         '<td>' + order.name + '</td>',
                         '<td>' + order.email + '</td>',
                         '<td>' + order.sum + '</td>',
-                        '<td><a href="#order/' + order.id + '">See details</td></tr>',
+                        '<td><a href="#order/' + order.id + '">' + translate('See details') + '</td></tr>',
                     ].join('');
                 });
                 return html;
@@ -232,10 +235,10 @@
             function renderProductsInOrder(products) {
                 html = [
                     '<tr>',
-                    '<th>Title</th>',
-                    '<th>Description</th>',
-                    '<th>Price</th>',
-                    '<th>Image</th>',
+                    '<th>' + translate('Title') + '</th>',
+                    '<th>' + translate('Description') + '</th>',
+                    '<th>' + translate('Price') + '</th>',
+                    '<th>' + translate('Image') + '</th>',
                     '</tr>'
                 ].join('');
                 $.each(products, function (key, product) {
@@ -252,15 +255,15 @@
             }
             function renderListOrderDetails(order) {
                 html = [
-                    '<li>Date: ' + order.date +'</li>',
-                    '<li>Name: ' + order.name +'</li>',
-                    '<li>Email: ' + order.email +'</li>',
+                    '<li>' + translate('Date:') +  + order.date +'</li>',
+                    '<li>' + translate('Name:') +  order.name +'</li>',
+                    '<li>' + translate('Email:') +  order.email +'</li>',
                 ].join('');
                 return html;
             }
             function createLogout() {
                 html = [
-                    '<button type="submit" name="logout" value="logout">Logout</button>',
+                    '<button type="submit" name="logout" value="logout">' + translate('Logout') + '</button>',
                 ].join('');
                 return html;
             }
